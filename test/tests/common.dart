@@ -1,15 +1,15 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:hive/hive.dart';
+import 'package:hive_managed/hive_managed_error.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
-Matcher throwsHiveError([String contains]) {
+Matcher throwsHiveManagedError([String contains]) {
   return throwsA(
     allOf(
-      isA<HiveError>(),
-      predicate((HiveError e) =>
+      isA<HiveManagedError>(),
+      predicate((HiveManagedError e) =>
           contains == null ||
           e.toString().toLowerCase().contains(contains.toLowerCase())),
     ),
