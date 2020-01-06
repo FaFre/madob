@@ -2,19 +2,19 @@ import 'package:meta/meta.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_managed/hive_managed_error.dart';
 
-class HiveRepository {
-  static bool _isInitialized = false;
-  static bool get isInitialized => _isInitialized;
+class HiveRepositoryImplementation {
+   bool _isInitialized = false;
+   bool get isInitialized => _isInitialized;
 
   @visibleForTesting
-  static HiveInterface hiveInterface = Hive;
+   HiveInterface hiveInterface = Hive;
 
-  static final Map<Type, String> _boxCache = {};
+   final Map<Type, String> _boxCache = {};
 
-  static void _throwNotInitialized() =>
+   void _throwNotInitialized() =>
       throw HiveManagedError('Repository is not initialized');
 
-  static void init(String path) {
+   void init(String path) {
     assert(path != null && path.isNotEmpty);
 
     if (isInitialized) {
@@ -27,7 +27,7 @@ class HiveRepository {
     }
   }
 
-  static void register<T extends HiveObject>(
+   void register<T extends HiveObject>(
       String boxName, TypeAdapter<T> adapter) {
     assert(boxName != null && boxName.isNotEmpty);
     assert(adapter != null);
@@ -48,7 +48,7 @@ class HiveRepository {
     _boxCache.putIfAbsent(T, () => boxName);
   }
 
-  static String getBoxName<T extends HiveObject>() {
+   String getBoxName<T extends HiveObject>() {
     //TODO: validation exceptions
     if (!isInitialized) {
       _throwNotInitialized();
