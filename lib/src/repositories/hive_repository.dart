@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:hive_managed/hive_managed_error.dart';
 
 class HiveRepository {
   static bool _isInitialized = false;
@@ -6,7 +7,15 @@ class HiveRepository {
 
   static final Map<Type, String> _boxCache = {};
 
+  static void _throwNotInitialized() => throw HiveManagedError('Repository is not initialized');
+
   static void init(String path) {
+    assert(path != null && path.isNotEmpty);
+
+    if(isInitialized) {
+      throw HiveManagedError('Repository is already initialized');
+    }
+
     if (!isInitialized) {
       Hive.init(path);
       _isInitialized = true;
@@ -18,7 +27,17 @@ class HiveRepository {
     assert(boxName != null && boxName.isNotEmpty);
     assert(adapter != null);
 
-    //TODO: validation exceptions
+    if(!isInitialized) {
+      _throwNotInitialized();
+    }
+
+    if(_boxCache.containsKey(T)) {
+      throw HiveManagedError('Type $T is already registered');
+    }
+
+    if(_boxCache.containsValue(boxName)) {
+      throw HiveManagedError('Box $boxName is already registered');
+    }
 
     Hive.registerAdapter(adapter);
     _boxCache.putIfAbsent(T, () => boxName);
@@ -26,6 +45,13 @@ class HiveRepository {
 
   static String getBoxName<T extends HiveObject>() {
     //TODO: validation exceptions
+    if(!isInitialized) {
+      _throwNotInitialized();
+    }
+
+    if(!_boxCache.containsKey(T)) {
+      throw HiveManagedError('Unknown $T has not been registered');
+    }
 
     return _boxCache[T];
   }
