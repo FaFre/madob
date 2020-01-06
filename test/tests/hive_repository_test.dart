@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:hive_managed/src/repositories/hive_repository.dart';
+import 'package:hive_managed/hive_managed.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
@@ -30,11 +30,11 @@ void main() {
           throwsHiveManagedError('not initialized'));
     });
     test('should initialize repository with path', () async {
-      final path = await getTempDir();
+      final fakePath = 'doesntmatter';
 
-      HiveRepository.init(path.path);
+      HiveRepository.init(fakePath);
 
-      verify(HiveRepository.hiveInterface.init(path.path));
+      verify(HiveRepository.hiveInterface.init(fakePath));
       expect(HiveRepository.isInitialized, equals(true));
     });
     test('should throw because of double initialization', () {
