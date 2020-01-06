@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-import '../domain/entities/project.dart';
+import '../../domain/entities/project.dart';
 
 part 'project_model.g.dart';
 

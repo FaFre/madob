@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 
-import '../domain/entities/project.dart';
-import '../domain/entities/task.dart';
+import '../../domain/entities/project.dart';
+import '../../domain/entities/task.dart';
 import 'project_model.dart';
 
 part 'task_model.g.dart';
