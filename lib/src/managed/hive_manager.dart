@@ -1,18 +1,67 @@
 import 'package:hive/hive.dart';
 import 'package:hive_managed/hive_managed.dart';
+import 'package:hive_managed/hive_managed_error.dart';
+import 'package:hive_managed/src/entities/key.dart';
 import 'package:hive_managed/src/repositories/hive_repository.dart';
 import 'package:meta/meta.dart';
 
 class HiveManager<T extends HiveObject> {
+  static final Map<Type, HiveManager> _managerCache = {};
+
   @visibleForTesting
   static HiveInterface hiveInterface = Hive;
 
   @visibleForTesting
   static HiveRepositoryImplementation hiveRepository = HiveRepository;
 
-  Future<Box<T>> getBox() async {
-    return Hive.openBox(hiveRepository.getBoxName<T>());
+  dynamic getId(T instance) {
+    assert(instance != null);
+
+    if (instance is! IKey) {
+      throw HiveManagedError(
+          'Unable to get Id because $T does not implement $IKey');
+    }
+
+    return (instance as IKey).managedId;
   }
 
-  factory HiveManager() => null; //TODO: Singleton
+  Future<Box<T>> getBox() async {
+    return hiveInterface.openBox(hiveRepository.getBoxName<T>());
+  }
+
+  Future<void> _put(T instance) async =>
+      (await getBox()).put(getId(instance), instance);
+
+  Future<T> _get(dynamic key) async => (await getBox()).get(key);
+
+  Future<T> ensure(T instance) async {
+    // assert(instance != null);
+
+    if (!instance.isInBox) {
+      final id = getId(instance);
+      if (id == null) {
+        throw HiveManagedError(
+            'Instance of $T is not in a box. Id of the object is null. Valid Id is required for all operations');
+      }
+
+      final existingItem = await _get(id);
+      if (existingItem != null) {
+        return existingItem;
+      } else {
+        await _put(instance);
+      }
+    }
+
+    return instance;
+  }
+
+  HiveManager._internal();
+
+  factory HiveManager() {
+    if (_managerCache.containsKey(T)) {
+      return _managerCache[T];
+    }
+
+    return _managerCache.putIfAbsent(T, () => HiveManager<T>._internal());
+  }
 }
