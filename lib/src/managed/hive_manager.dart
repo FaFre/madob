@@ -15,6 +15,13 @@ class HiveManager<T extends HiveObject> {
   @visibleForTesting
   static HiveRepositoryImplementation hiveRepository = HiveRepository;
 
+  void _checkInstanceOnNull(HiveObjectReference<T> instance) {
+    if (instance.hiveObject == null) {
+      throw HiveManagedError(
+          'Cannot work with empty/null instance of $T in $HiveObjectReference');
+    }
+  }
+
   dynamic getId(T instance) {
     assert(instance != null);
 
@@ -38,10 +45,7 @@ class HiveManager<T extends HiveObject> {
   Future<void> ensureAndModify(HiveObjectReference<T> instance) async {
     assert(instance != null);
 
-    if (instance.hiveObject == null) {
-      throw HiveManagedError(
-          'Cannot work with empty/null instance of $T in $HiveObjectReference');
-    }
+    _checkInstanceOnNull(instance);
 
     instance.hiveObject = await ensureAndReturn(instance.hiveObject);
   }
@@ -65,6 +69,31 @@ class HiveManager<T extends HiveObject> {
     }
 
     return instance;
+  }
+
+  Future<R> getValue<R>(
+      HiveObjectReference<T> hiveInstance, Future<R> Function(T) getValue,
+      {uninsuredGet = false}) async {
+    assert(hiveInstance != null);
+    assert(getValue != null);
+
+    _checkInstanceOnNull(hiveInstance);
+
+    if (!uninsuredGet) await ensureAndModify(hiveInstance);
+    return getValue(hiveInstance.hiveObject);
+  }
+
+  Future<void> setValue(HiveObjectReference<T> hiveInstance,
+      Future<void> Function(T) writeValue) async {
+    assert(hiveInstance != null);
+    assert(writeValue != null);
+
+    _checkInstanceOnNull(hiveInstance);
+
+    await ensureAndModify(hiveInstance);
+    await writeValue(hiveInstance.hiveObject);
+
+    return hiveInstance.hiveObject.save();
   }
 
   HiveManager._internal();
