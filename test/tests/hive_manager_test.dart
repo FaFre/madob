@@ -1,12 +1,16 @@
 import 'package:hive/hive.dart';
 import 'package:hive_managed/hive_managed.dart';
+import 'package:hive_managed/src/entities/hive_object_reference.dart';
 import 'package:hive_managed/src/entities/key.dart';
+import 'package:hive_managed/src/managed/hive_managed.dart';
 import 'package:hive_managed/src/managed/hive_manager.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:hive_managed/src/repositories/hive_repository.dart';
+import '../data/objects/data/entities/managed_task_model.dart';
 import '../data/objects/data/entities/task_model.dart';
+import '../data/objects/domain/entities/task.dart';
 import 'common.dart';
 
 class MockHive extends Mock implements HiveInterface {}
@@ -18,6 +22,12 @@ class MockBox<T> extends Mock implements Box<T> {}
 class MockHiveObject extends Mock implements HiveObject {}
 
 class MockTask extends Mock implements Task {}
+
+class MockManagedTask extends Mock
+    implements
+        HiveManaged<MockTask, MockManagedTask>,
+        ITask,
+        HiveObjectReference<MockTask> {}
 
 void main() {
   setUp(() {
@@ -78,13 +88,13 @@ void main() {
     });
   });
 
-  group('ensure', () {
+  group('ensureAndReturn', () {
     test('return same isInBox', () async {
       final tTask = MockTask();
 
       when(tTask.isInBox).thenReturn(true);
 
-      final returnedTask = await HiveManager<MockTask>().ensure(tTask);
+      final returnedTask = await HiveManager<MockTask>().ensureAndReturn(tTask);
 
       verify(tTask.isInBox);
       noMoreInteractions();
@@ -114,7 +124,7 @@ void main() {
 
       when(tTask.isInBox).thenReturn(false);
 
-      final returnedTask = await HiveManager<MockTask>().ensure(tTask);
+      final returnedTask = await HiveManager<MockTask>().ensureAndReturn(tTask);
 
       verify(HiveManager.hiveRepository.getBoxName<MockTask>());
       verify(HiveManager.hiveInterface.openBox(tBoxName));
@@ -144,7 +154,7 @@ void main() {
 
       when(tTask.isInBox).thenReturn(false);
 
-      final returnedTask = await HiveManager<MockTask>().ensure(tTask);
+      final returnedTask = await HiveManager<MockTask>().ensureAndReturn(tTask);
 
       verify(HiveManager.hiveRepository.getBoxName<MockTask>());
       verify(HiveManager.hiveInterface.openBox(tBoxName));
@@ -163,10 +173,53 @@ void main() {
       when(tTask.isInBox).thenReturn(false);
       when(tTask.managedId).thenReturn(null);
 
-      expect(() => HiveManager<MockTask>().ensure(tTask),
+      expect(() => HiveManager<MockTask>().ensureAndReturn(tTask),
           throwsHiveManagedError('null'));
 
       zeroInteractions();
+    });
+  });
+
+  group('ensureAndModify', () {
+    test('should thrown because of HiveObject null', () {
+      final tReference = ManagedTask();
+
+      expect(() => HiveManager<Task>().ensureAndModify(tReference),
+          throwsHiveManagedError('null'));
+
+      zeroInteractions();
+    });
+
+    test('modify returned obj from ensureAndModify', () async {
+      final tBoxName = 'testBox';
+      final tId = '1';
+      final tTask = MockTask();
+      final tReturnedTask = MockTask();
+      final tTaskInstance = MockManagedTask();
+
+      final tBox = MockBox<MockTask>();
+
+      when(HiveManager.hiveRepository.getBoxName<MockTask>())
+          .thenReturn(tBoxName);
+      when(HiveManager.hiveInterface.openBox(tBoxName))
+          .thenAnswer((_) => Future<MockBox<MockTask>>.value(tBox));
+
+      when(tTaskInstance.hiveObject).thenReturn(tTask);
+      when(tTask.managedId).thenReturn(tId);
+
+      when(tBox.get(tId)).thenReturn(tReturnedTask);
+
+      when(tTask.isInBox).thenReturn(false);
+
+      await HiveManager<MockTask>().ensureAndModify(tTaskInstance);
+
+      verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+      verify(HiveManager.hiveInterface.openBox(tBoxName));
+      verify(tTask.managedId);
+      verify(tBox.get(any));
+      verify(tTaskInstance.hiveObject = tReturnedTask);
+
+      noMoreInteractions();
     });
   });
 }

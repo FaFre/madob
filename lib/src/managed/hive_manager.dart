@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:hive_managed/hive_managed.dart';
 import 'package:hive_managed/hive_managed_error.dart';
+import 'package:hive_managed/src/entities/hive_object_reference.dart';
 import 'package:hive_managed/src/entities/key.dart';
 import 'package:hive_managed/src/repositories/hive_repository.dart';
 import 'package:meta/meta.dart';
@@ -34,8 +35,19 @@ class HiveManager<T extends HiveObject> {
 
   Future<T> _get(dynamic key) async => (await getBox()).get(key);
 
-  Future<T> ensure(T instance) async {
-    // assert(instance != null);
+  Future<void> ensureAndModify(HiveObjectReference<T> instance) async {
+    assert(instance != null);
+
+    if (instance.hiveObject == null) {
+      throw HiveManagedError(
+          'Cannot work with empty/null instance of $T in $HiveObjectReference');
+    }
+
+    instance.hiveObject = await ensureAndReturn(instance.hiveObject);
+  }
+
+  Future<T> ensureAndReturn(T instance) async {
+    assert(instance != null);
 
     if (!instance.isInBox) {
       final id = getId(instance);
