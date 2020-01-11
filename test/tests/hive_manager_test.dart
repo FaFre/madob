@@ -57,13 +57,15 @@ class EnsuredTest {
     when(tBox.get(tId)).thenReturn(tReturnedTask);
   }
 
-  Future<void> run(Future Function() func) async {
+  Future<void> run(Future Function() func, {doVerification = true}) async {
     await func();
 
-    verify(HiveManager.hiveRepository.getBoxName<MockTask>());
-    verify(HiveManager.hiveInterface.openBox(tBoxName));
-    verify(tTask.managedId);
-    verify(tBox.get(any));
+    if (doVerification) {
+      verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+      verify(HiveManager.hiveInterface.openBox(tBoxName));
+      verify(tTask.managedId);
+      verify(tBox.get(any));
+    }
   }
 }
 
