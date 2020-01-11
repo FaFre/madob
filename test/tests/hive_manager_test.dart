@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:hive_managed/hive_managed.dart';
 import 'package:hive_managed/src/entities/hive_object_reference.dart';
 import 'package:hive_managed/src/entities/key.dart';
 import 'package:hive_managed/src/managed/hive_managed.dart';
@@ -70,6 +69,14 @@ class EnsuredTest {
 }
 
 void main() {
+  final tBoxName = 'testBox';
+  final tId = '1';
+  final tTask = MockTask();
+  final tReturnedTask = MockTask();
+  final tTaskInstance = MockManagedTask();
+
+  final tBox = MockBox<MockTask>();
+
   setUp(() {
     HiveManager.hiveInterface = MockHive();
     HiveManager.hiveRepository = MockRepository();
@@ -98,409 +105,397 @@ void main() {
     verify(HiveManager.hiveRepository.getBoxName<Task>());
     verify(HiveManager.hiveInterface.openBox(tBox));
 
+    noMoreInteractions();
+
     return box;
   }
 
-  test('should get task box', () async {
-    var box = await openBox(() => HiveManager<Task>().getBox());
-
-    noMoreInteractions();
-
-    expect(box, isA<Box<Task>>());
-  });
-
-  group('get id', () {
-    test('should get id from task', () {
-      final id = '1337';
-      final task = Task(id);
-
-      var regainedId = HiveManager<Task>().getId(task) as String;
-
-      zeroInteractions();
-
-      expect(regainedId, equals(id));
-    });
-
-    test('should throw because of wrong object', () {
-      final wrongObject = MockHiveObject();
-
-      expect(() => HiveManager<MockHiveObject>().getId(wrongObject),
-          throwsHiveManagedError('not implement $IKey'));
-    });
-  });
-
-  group('ensureAndReturn', () {
-    test('should return same isInBox', () async {
-      final tTask = MockTask();
-
-      when(tTask.isInBox).thenReturn(true);
-
-      final returnedTask = await HiveManager<MockTask>().ensureAndReturn(tTask);
-
-      verify(tTask.isInBox);
+  group('HiveManager', () {
+    test('.getBox() should get task box', () async {
+      final box = await openBox(() => HiveManager<Task>().getBox());
 
       noMoreInteractions();
 
-      expect(returnedTask, equals(tTask));
+      expect(box, isA<Box<Task>>());
     });
 
-    test('should return via get', () async {
-      MockTask returnedTask;
+    group('.getId()', () {
+      test('should get id from task', () {
+        final id = '1337';
+        final task = Task(id);
 
-      final ensuredTest = EnsuredTest();
-      await ensuredTest.run(() async => returnedTask =
-          await HiveManager<MockTask>().ensureAndReturn(ensuredTest.tTask));
+        final regainedId = HiveManager<Task>().getId(task) as String;
 
-      noMoreInteractions();
+        zeroInteractions();
 
-      expect(await returnedTask.title, equals(ensuredTest.tReturnedTaskTitle));
+        expect(regainedId, equals(id));
+      });
+
+      test('should throw because of wrong object', () {
+        final wrongObject = MockHiveObject();
+
+        expect(() => HiveManager<MockHiveObject>().getId(wrongObject),
+            throwsHiveManagedError('not implement $IKey'));
+
+        zeroInteractions();
+      });
     });
 
-    test('should return via put', () async {
-      final tBoxName = 'testBox';
-      final tId = '1';
-      final tTask = MockTask();
+    group('.ensureAndReturn()', () {
+      test('should return same isInBox', () async {
+        when(tTask.isInBox).thenReturn(true);
 
-      final tBox = MockBox<MockTask>();
+        final returnedTask =
+            await HiveManager<MockTask>().ensureAndReturn(tTask);
 
-      when(HiveManager.hiveRepository.getBoxName<MockTask>())
-          .thenReturn(tBoxName);
-      when(HiveManager.hiveInterface.openBox(tBoxName))
-          .thenAnswer((_) => Future<MockBox<MockTask>>.value(tBox));
+        verify(tTask.isInBox);
 
-      when(tTask.isInBox).thenReturn(false);
-      when(tTask.managedId).thenReturn(tId);
+        noMoreInteractions();
 
-      when(tBox.get(tId)).thenReturn(null);
+        expect(returnedTask, equals(tTask));
+      });
 
-      final returnedTask = await HiveManager<MockTask>().ensureAndReturn(tTask);
+      test('should return via get', () async {
+        MockTask returnedTask;
 
-      verify(HiveManager.hiveRepository.getBoxName<MockTask>());
-      verify(HiveManager.hiveInterface.openBox(tBoxName));
-      verify(tTask.managedId);
-      verify(tBox.get(tId));
-      verify(tBox.put(tId, tTask));
+        final ensuredTest = EnsuredTest();
+        await ensuredTest.run(() async => returnedTask =
+            await HiveManager<MockTask>().ensureAndReturn(ensuredTest.tTask));
 
-      noMoreInteractions();
+        noMoreInteractions();
 
-      expect(returnedTask, equals(tTask));
+        expect(
+            await returnedTask.title, equals(ensuredTest.tReturnedTaskTitle));
+      });
+
+      test('should return via put', () async {
+        when(HiveManager.hiveRepository.getBoxName<MockTask>())
+            .thenReturn(tBoxName);
+        when(HiveManager.hiveInterface.openBox(tBoxName))
+            .thenAnswer((_) => Future<MockBox<MockTask>>.value(tBox));
+
+        when(tTask.isInBox).thenReturn(false);
+        when(tTask.managedId).thenReturn(tId);
+
+        when(tBox.get(tId)).thenReturn(null);
+
+        final returnedTask =
+            await HiveManager<MockTask>().ensureAndReturn(tTask);
+
+        verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+        verify(HiveManager.hiveInterface.openBox(tBoxName));
+        verify(tTask.managedId);
+        verify(tBox.get(tId));
+        verify(tBox.put(tId, tTask));
+
+        noMoreInteractions();
+
+        expect(returnedTask, equals(tTask));
+      });
+
+      test('should throw because key is null', () {
+        when(tTask.isInBox).thenReturn(false);
+        when(tTask.managedId).thenReturn(null);
+
+        zeroInteractions();
+
+        expect(() => HiveManager<MockTask>().ensureAndReturn(tTask),
+            throwsHiveManagedError('null'));
+      });
     });
 
-    test('should throw because key is null', () {
-      final tTask = MockTask();
+    group('.ensureAndModify()', () {
+      test('should thrown because of HiveObject null', () {
+        zeroInteractions();
 
-      when(tTask.isInBox).thenReturn(false);
-      when(tTask.managedId).thenReturn(null);
+        expect(() => HiveManager<Task>().ensureAndModify(tTaskInstance),
+            throwsHiveManagedError('null'));
+      });
 
-      zeroInteractions();
+      test('should modify returned obj from ensureAndModify', () async {
+        final ensuredTest = EnsuredTest();
+        await ensuredTest.run(() async => await HiveManager<MockTask>()
+            .ensureAndModify(ensuredTest.tTaskInstance));
 
-      expect(() => HiveManager<MockTask>().ensureAndReturn(tTask),
-          throwsHiveManagedError('null'));
-    });
-  });
+        verify(
+            ensuredTest.tTaskInstance.hiveObject = ensuredTest.tReturnedTask);
 
-  group('ensureAndModify', () {
-    test('should thrown because of HiveObject null', () {
-      final tReference = ManagedTask();
-
-      expect(() => HiveManager<Task>().ensureAndModify(tReference),
-          throwsHiveManagedError('null'));
-
-      zeroInteractions();
+        noMoreInteractions();
+      });
     });
 
-    test('should modify returned obj from ensureAndModify', () async {
-      final ensuredTest = EnsuredTest();
-      await ensuredTest.run(() async => await HiveManager<MockTask>()
-          .ensureAndModify(ensuredTest.tTaskInstance));
+    group('.get()', () {
+      test('should get value ensured', () async {
+        final returnValue = 1;
+        var calledInstance;
+        var callReturnValue;
 
-      verify(ensuredTest.tTaskInstance.hiveObject = ensuredTest.tReturnedTask);
+        var ensuredTest = EnsuredTest();
+        await ensuredTest.run(() async {
+          callReturnValue = await HiveManager<MockTask>()
+              .getValue<int>(ensuredTest.tTaskInstance, (instance) async {
+            calledInstance = instance;
+            return returnValue;
+          });
+        });
 
-      noMoreInteractions();
-    });
-  });
+        verify(
+            ensuredTest.tTaskInstance.hiveObject = ensuredTest.tReturnedTask);
 
-  group('get', () {
-    test('should get ensured', () async {
-      final returnValue = 1;
-      var calledInstance;
-      var callReturnValue;
+        noMoreInteractions();
 
-      var ensuredTest = EnsuredTest();
-      await ensuredTest.run(() async {
-        callReturnValue = await HiveManager<MockTask>()
+        expect(calledInstance, equals(ensuredTest.tTaskInstance.hiveObject));
+        expect(callReturnValue, equals(returnValue));
+      });
+
+      test('should get value uninsured', () async {
+        final returnValue = 1;
+        var calledInstance;
+
+        final ensuredTest = EnsuredTest();
+        when(ensuredTest.tTaskInstance.hiveObject)
+            .thenReturn(ensuredTest.tTask);
+
+        var callReturnValue = await HiveManager<MockTask>()
             .getValue<int>(ensuredTest.tTaskInstance, (instance) async {
           calledInstance = instance;
           return returnValue;
-        });
+        }, uninsuredGet: true);
+
+        zeroInteractions();
+
+        expect(calledInstance, equals(ensuredTest.tTaskInstance.hiveObject));
+        expect(callReturnValue, equals(returnValue));
       });
 
-      verify(ensuredTest.tTaskInstance.hiveObject = ensuredTest.tReturnedTask);
+      test('should throw object null', () async {
+        final instance = MockManagedTask();
 
-      expect(calledInstance, equals(ensuredTest.tTaskInstance.hiveObject));
-      expect(callReturnValue, equals(returnValue));
+        expect(
+            () async => await HiveManager<MockTask>().getValue<int>(instance,
+                    (_) async {
+                  return null;
+                }),
+            throwsHiveManagedError('null'));
 
-      noMoreInteractions();
+        zeroInteractions();
+      });
     });
 
-    test('should get uninsured', () async {
-      final returnValue = 1;
-      var calledInstance;
+    group('.set()', () {
+      test('should set value', () async {
+        var calledInstance;
 
-      final ensuredTest = EnsuredTest();
-      when(ensuredTest.tTaskInstance.hiveObject).thenReturn(ensuredTest.tTask);
+        final ensuredTest = EnsuredTest();
+        when(ensuredTest.tTask.save()).thenAnswer((_) => Future.value());
 
-      var callReturnValue = await HiveManager<MockTask>()
-          .getValue<int>(ensuredTest.tTaskInstance, (instance) async {
-        calledInstance = instance;
-        return returnValue;
-      }, uninsuredGet: true);
+        await ensuredTest.run(() async => await HiveManager<MockTask>()
+            .setValue(ensuredTest.tTaskInstance,
+                (instance) async => calledInstance = instance));
 
-      zeroInteractions();
+        verify(ensuredTest.tTask.save());
 
-      expect(calledInstance, equals(ensuredTest.tTaskInstance.hiveObject));
-      expect(callReturnValue, equals(returnValue));
-    });
+        noMoreInteractions();
 
-    test('should throw object null', () async {
-      final instance = MockManagedTask();
-
-      expect(
-          () async =>
-              await HiveManager<MockTask>().getValue<int>(instance, (_) async {
-                return null;
-              }),
-          throwsHiveManagedError('null'));
-    });
-  });
-
-  group('set', () {
-    test('should set value', () async {
-      var calledInstance;
-
-      final ensuredTest = EnsuredTest();
-      when(ensuredTest.tTask.save()).thenAnswer((_) => Future.value());
-
-      await ensuredTest.run(() async => await HiveManager<MockTask>().setValue(
-          ensuredTest.tTaskInstance,
-          (instance) async => calledInstance = instance));
-
-      verify(ensuredTest.tTask.save());
-
-      noMoreInteractions();
-
-      expect(calledInstance, equals(ensuredTest.tTaskInstance.hiveObject));
-    });
-
-    test('should throw object null', () async {
-      final instance = MockManagedTask();
-
-      expect(
-          () async =>
-              await HiveManager<MockTask>().setValue(instance, (_) async {
-                return null;
-              }),
-          throwsHiveManagedError('null'));
-    });
-  });
-
-  group('set reference', () {
-    test('should throw object null', () async {
-      final instance = MockManagedTask();
-
-      expect(
-          () async => await HiveManager<MockTask>().setReference(instance, null,
-                  (i, v) async {
-                return null;
-              }),
-          throwsHiveManagedError('null'));
-    });
-    test('set empty reference', () async {
-      final ensuredTest = EnsuredTest();
-
-      var setterCalled = false;
-      MockTask returendInstance;
-
-      await ensuredTest.run(() async {
-        returendInstance = await HiveManager<MockTask>().setReference<MockTask>(
-            ensuredTest.tTaskInstance, null, (instance, val) async {
-          setterCalled = true;
-        });
+        expect(calledInstance, equals(ensuredTest.tTaskInstance.hiveObject));
       });
 
-      noMoreInteractions();
+      test('should thrown because of HiveObject null', () async {
+        expect(
+            () async => await HiveManager<MockTask>().setValue(tTaskInstance,
+                    (_) async {
+                  return null;
+                }),
+            throwsHiveManagedError('null'));
 
-      expect(setterCalled, equals(false));
-      expect(returendInstance, equals(null));
+        zeroInteractions();
+      });
     });
 
-    test('set reference', () async {
-      final ensuredTest = EnsuredTest();
+    group('.setReference()', () {
+      test('should thrown because of HiveObject null', () async {
+        expect(
+            () async => await HiveManager<MockTask>()
+                    .setReference(tTaskInstance, null, (i, v) async {
+                  return null;
+                }),
+            throwsHiveManagedError('null'));
 
-      var setterCalled = false;
-      MockTask returendInstance;
-      MockTask settedValue;
-      MockTask settedInstance;
+        zeroInteractions();
+      });
+      test('should set empty reference', () async {
+        final ensuredTest = EnsuredTest();
 
-      await ensuredTest.run(() async {
-        returendInstance = await HiveManager<MockTask>().setReference<MockTask>(
-            ensuredTest.tTaskInstance, ensuredTest.tTask,
-            (instance, val) async {
-          settedValue = val;
-          settedInstance = instance;
-          setterCalled = true;
+        var setterCalled = false;
+        MockTask returendInstance;
+
+        await ensuredTest.run(() async {
+          returendInstance = await HiveManager<MockTask>()
+              .setReference<MockTask>(ensuredTest.tTaskInstance, null,
+                  (instance, val) async {
+            setterCalled = true;
+          });
         });
-      }, doVerification: false);
 
-      verify(HiveManager.hiveRepository.getBoxName<MockTask>()).called(2);
-      verify(HiveManager.hiveInterface.openBox(ensuredTest.tBoxName)).called(2);
-      verify(ensuredTest.tTask.managedId).called(2);
-      verify(ensuredTest.tBox.get(any)).called(2);
-      verify(ensuredTest.tTask.save());
+        noMoreInteractions();
 
-      expect(setterCalled, equals(true));
-      expect(returendInstance, equals(ensuredTest.tReturnedTask));
-      expect(settedValue, equals(ensuredTest.tReturnedTask));
-      expect(settedInstance, equals(ensuredTest.tTaskInstance.hiveObject));
-    });
-  });
+        expect(setterCalled, equals(false));
+        expect(returendInstance, equals(null));
+      });
 
-  group('get or update reference', () {
-    test('should throw object null', () async {
-      final instance = MockManagedTask();
+      test('should set reference', () async {
+        final ensuredTest = EnsuredTest();
 
-      expect(
-          () async => await HiveManager<MockTask>().getOrUpdateReference(
-                  instance, (_) async => null, (i, v) async {
-                return null;
-              }),
-          throwsHiveManagedError('null'));
-    });
+        var setterCalled = false;
+        MockTask returendInstance;
+        MockTask settedValue;
+        MockTask settedInstance;
 
-    test('set reference', () async {
-      final ensuredTest = EnsuredTest();
+        await ensuredTest.run(() async {
+          returendInstance = await HiveManager<MockTask>()
+              .setReference<MockTask>(
+                  ensuredTest.tTaskInstance, ensuredTest.tTask,
+                  (instance, val) async {
+            settedValue = val;
+            settedInstance = instance;
+            setterCalled = true;
+          });
+        }, doVerification: false);
 
-      var getterCalled = false;
-      var setterCalled = false;
-      MockTask returendInstance;
-      MockTask settedValue;
-      MockTask getterInstance;
-      MockTask settedInstance;
+        verify(HiveManager.hiveRepository.getBoxName<MockTask>()).called(2);
+        verify(HiveManager.hiveInterface.openBox(ensuredTest.tBoxName))
+            .called(2);
+        verify(ensuredTest.tTask.managedId).called(2);
+        verify(ensuredTest.tBox.get(any)).called(2);
+        verify(ensuredTest.tTask.save());
 
-      await ensuredTest.run(() async {
-        returendInstance = await HiveManager<MockTask>()
-            .getOrUpdateReference<MockTask>(ensuredTest.tTaskInstance,
-                (instance) async {
-          getterCalled = true;
-          getterInstance = instance;
-          return ensuredTest.tTask;
-        }, (instance, val) async {
-          settedValue = val;
-          settedInstance = instance;
-          setterCalled = true;
-        });
-      }, doVerification: false);
+        noMoreInteractions();
 
-      verify(HiveManager.hiveRepository.getBoxName<MockTask>()).called(2);
-      verify(HiveManager.hiveInterface.openBox(ensuredTest.tBoxName)).called(2);
-      verify(ensuredTest.tTask.managedId).called(2);
-      verify(ensuredTest.tBox.get(any)).called(2);
-      verify(ensuredTest.tTask.save());
-
-      expect(getterCalled, equals(true));
-      expect(setterCalled, equals(true));
-      expect(returendInstance, equals(ensuredTest.tReturnedTask));
-      expect(settedValue, equals(ensuredTest.tReturnedTask));
-      expect(getterInstance, equals(ensuredTest.tTaskInstance.hiveObject));
-      expect(settedInstance, equals(ensuredTest.tTaskInstance.hiveObject));
-    });
-  });
-
-  group('delete', () {
-    test('throw on null', () async {
-      final instance = MockManagedTask();
-
-      expect(() async => HiveManager<MockTask>().delete(instance),
-          throwsHiveManagedError('null'));
-
-      zeroInteractions();
+        expect(setterCalled, equals(true));
+        expect(returendInstance, equals(ensuredTest.tReturnedTask));
+        expect(settedValue, equals(ensuredTest.tReturnedTask));
+        expect(settedInstance, equals(ensuredTest.tTaskInstance.hiveObject));
+      });
     });
 
-    test('throw because id not in box', () async {
-      final tBoxName = 'testBox';
-      final tId = '1';
-      final tTask = MockTask();
-      final tTaskInstance = MockManagedTask();
+    group('.getOrUpdateReference()', () {
+      test('should thrown because of HiveObject null', () async {
+        expect(
+            () async => await HiveManager<MockTask>().getOrUpdateReference(
+                    tTaskInstance, (_) async => null, (i, v) async {
+                  return null;
+                }),
+            throwsHiveManagedError('null'));
+      });
 
-      final tBox = MockBox<MockTask>();
+      test('should update reference', () async {
+        final ensuredTest = EnsuredTest();
 
-      when(HiveManager.hiveRepository.getBoxName<MockTask>())
-          .thenReturn(tBoxName);
-      when(HiveManager.hiveInterface.openBox(tBoxName))
-          .thenAnswer((_) => Future<MockBox<MockTask>>.value(tBox));
+        var getterCalled = false;
+        var setterCalled = false;
+        MockTask returendInstance;
+        MockTask settedValue;
+        MockTask getterInstance;
+        MockTask settedInstance;
 
-      when(tTask.isInBox).thenReturn(false);
-      when(tTask.managedId).thenReturn(tId);
+        await ensuredTest.run(() async {
+          returendInstance = await HiveManager<MockTask>()
+              .getOrUpdateReference<MockTask>(ensuredTest.tTaskInstance,
+                  (instance) async {
+            getterCalled = true;
+            getterInstance = instance;
+            return ensuredTest.tTask;
+          }, (instance, val) async {
+            settedValue = val;
+            settedInstance = instance;
+            setterCalled = true;
+          });
+        }, doVerification: false);
 
-      when(tTaskInstance.hiveObject).thenReturn(tTask);
-      when(tBox.get(tId)).thenReturn(null);
+        verify(HiveManager.hiveRepository.getBoxName<MockTask>()).called(2);
+        verify(HiveManager.hiveInterface.openBox(ensuredTest.tBoxName))
+            .called(2);
+        verify(ensuredTest.tTask.managedId).called(2);
+        verify(ensuredTest.tBox.get(any)).called(2);
+        verify(ensuredTest.tTask.save());
 
-      expect(() async => HiveManager<MockTask>().delete(tTaskInstance),
-          throwsHiveManagedError('Cannot delete'));
+        noMoreInteractions();
 
-      verify(HiveManager.hiveRepository.getBoxName<MockTask>());
-      verify(HiveManager.hiveInterface.openBox(tBoxName));
-      verify(tTask.managedId);
-
-      noMoreInteractions();
+        expect(getterCalled, equals(true));
+        expect(setterCalled, equals(true));
+        expect(returendInstance, equals(ensuredTest.tReturnedTask));
+        expect(settedValue, equals(ensuredTest.tReturnedTask));
+        expect(getterInstance, equals(ensuredTest.tTaskInstance.hiveObject));
+        expect(settedInstance, equals(ensuredTest.tTaskInstance.hiveObject));
+      });
     });
 
-    test('is not in box', () async {
-      final tBoxName = 'testBox';
-      final tId = '1';
-      final tTask = MockTask();
-      final tReturnedTask = MockTask();
-      final tTaskInstance = MockManagedTask();
+    group('.delete()', () {
+      test('should thrown because of HiveObject null', () async {
+        expect(() async => HiveManager<MockTask>().delete(tTaskInstance),
+            throwsHiveManagedError('null'));
 
-      final tBox = MockBox<MockTask>();
+        zeroInteractions();
+      });
 
-      when(HiveManager.hiveRepository.getBoxName<MockTask>())
-          .thenReturn(tBoxName);
-      when(HiveManager.hiveInterface.openBox(tBoxName))
-          .thenAnswer((_) => Future<MockBox<MockTask>>.value(tBox));
+      test('should throw because id is not in box', () async {
+        when(HiveManager.hiveRepository.getBoxName<MockTask>())
+            .thenReturn(tBoxName);
+        when(HiveManager.hiveInterface.openBox(tBoxName))
+            .thenAnswer((_) => Future<MockBox<MockTask>>.value(tBox));
 
-      when(tTask.isInBox).thenReturn(false);
-      when(tTask.managedId).thenReturn(tId);
+        when(tTask.isInBox).thenReturn(false);
+        when(tTask.managedId).thenReturn(tId);
 
-      when(tTaskInstance.hiveObject).thenReturn(tTask);
-      when(tBox.get(tId)).thenReturn(tReturnedTask);
+        when(tTaskInstance.hiveObject).thenReturn(tTask);
+        when(tBox.get(tId)).thenReturn(null);
 
-      await HiveManager<MockTask>().delete(tTaskInstance);
+        expect(() async => HiveManager<MockTask>().delete(tTaskInstance),
+            throwsHiveManagedError('Cannot delete'));
 
-      verify(HiveManager.hiveRepository.getBoxName<MockTask>());
-      verify(HiveManager.hiveInterface.openBox(tBoxName));
-      verify(tTask.managedId);
-      verify(tBox.get(tId));
-      verify(tTaskInstance.hiveObject = tReturnedTask);
-      verify(tTask.delete());
-      verify(tTaskInstance.hiveObject = null);
+        verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+        verify(HiveManager.hiveInterface.openBox(tBoxName));
+        verify(tTask.managedId);
 
-      noMoreInteractions();
-    });
+        noMoreInteractions();
+      });
 
-    test('is in box', () async {
-      final tTask = MockTask();
-      final tTaskInstance = MockManagedTask();
+      test('should delete task is not in box yet', () async {
+        when(HiveManager.hiveRepository.getBoxName<MockTask>())
+            .thenReturn(tBoxName);
+        when(HiveManager.hiveInterface.openBox(tBoxName))
+            .thenAnswer((_) => Future<MockBox<MockTask>>.value(tBox));
 
-      when(tTaskInstance.hiveObject).thenReturn(tTask);
-      when(tTask.isInBox).thenReturn(true);
+        when(tTask.isInBox).thenReturn(false);
+        when(tTask.managedId).thenReturn(tId);
 
-      await HiveManager<MockTask>().delete(tTaskInstance);
+        when(tTaskInstance.hiveObject).thenReturn(tTask);
+        when(tBox.get(tId)).thenReturn(tReturnedTask);
 
-      verify(tTask.delete());
-      verify(tTaskInstance.hiveObject = null);
+        await HiveManager<MockTask>().delete(tTaskInstance);
 
-      noMoreInteractions();
+        verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+        verify(HiveManager.hiveInterface.openBox(tBoxName));
+        verify(tTask.managedId);
+        verify(tBox.get(tId));
+        verify(tTaskInstance.hiveObject = tReturnedTask);
+        verify(tTask.delete());
+        verify(tTaskInstance.hiveObject = null);
+
+        noMoreInteractions();
+      });
+
+      test('should delete task that is already in box', () async {
+        when(tTaskInstance.hiveObject).thenReturn(tTask);
+        when(tTask.isInBox).thenReturn(true);
+
+        await HiveManager<MockTask>().delete(tTaskInstance);
+
+        verify(tTask.delete());
+        verify(tTaskInstance.hiveObject = null);
+
+        noMoreInteractions();
+      });
     });
   });
 }
