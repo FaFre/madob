@@ -22,6 +22,16 @@ class HiveManager<T extends HiveObject> {
     }
   }
 
+  dynamic _getValidIdOrThrow(T instance) {
+    final id = getId(instance);
+    if (id == null) {
+      throw HiveManagedError(
+          'Instance of $T is not in a box. Id of the object is null. Valid Id is required for all operations');
+    }
+
+    return id;
+  }
+
   dynamic getId(T instance) {
     assert(instance != null);
 
@@ -54,11 +64,7 @@ class HiveManager<T extends HiveObject> {
     assert(instance != null);
 
     if (!instance.isInBox) {
-      final id = getId(instance);
-      if (id == null) {
-        throw HiveManagedError(
-            'Instance of $T is not in a box. Id of the object is null. Valid Id is required for all operations');
-      }
+      final id = _getValidIdOrThrow(instance);
 
       final existingItem = await _get(id);
       if (existingItem != null) {
@@ -130,6 +136,27 @@ class HiveManager<T extends HiveObject> {
 
     return this.setReference(hiveInstance,
         await getReference(hiveInstance.hiveObject), setReference);
+  }
+
+  Future<void> delete(HiveObjectReference<T> hiveInstance) async {
+    assert(hiveInstance != null);
+
+    _checkInstanceOnNull(hiveInstance);
+
+    if (!hiveInstance.hiveObject.isInBox) {
+      final id = _getValidIdOrThrow(hiveInstance.hiveObject);
+
+      final existingItem = await _get(id);
+      if (existingItem == null) {
+        throw HiveManagedError(
+            'Cannot delete object because no item with id $id exists');
+      } else {
+        hiveInstance.hiveObject = existingItem;
+      }
+    }
+
+    await hiveInstance.hiveObject.delete();
+    hiveInstance.hiveObject = null;
   }
 
   HiveManager._internal();

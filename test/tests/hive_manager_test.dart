@@ -415,4 +415,92 @@ void main() {
       expect(settedInstance, equals(ensuredTest.tTaskInstance.hiveObject));
     });
   });
+
+  group('delete', () {
+    test('throw on null', () async {
+      final instance = MockManagedTask();
+
+      expect(() async => HiveManager<MockTask>().delete(instance),
+          throwsHiveManagedError('null'));
+
+      zeroInteractions();
+    });
+
+    test('throw because id not in box', () async {
+      final tBoxName = 'testBox';
+      final tId = '1';
+      final tTask = MockTask();
+      final tTaskInstance = MockManagedTask();
+
+      final tBox = MockBox<MockTask>();
+
+      when(HiveManager.hiveRepository.getBoxName<MockTask>())
+          .thenReturn(tBoxName);
+      when(HiveManager.hiveInterface.openBox(tBoxName))
+          .thenAnswer((_) => Future<MockBox<MockTask>>.value(tBox));
+
+      when(tTask.isInBox).thenReturn(false);
+      when(tTask.managedId).thenReturn(tId);
+
+      when(tTaskInstance.hiveObject).thenReturn(tTask);
+      when(tBox.get(tId)).thenReturn(null);
+
+      expect(() async => HiveManager<MockTask>().delete(tTaskInstance),
+          throwsHiveManagedError('Cannot delete'));
+
+      verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+      verify(HiveManager.hiveInterface.openBox(tBoxName));
+      verify(tTask.managedId);
+
+      noMoreInteractions();
+    });
+
+    test('is not in box', () async {
+      final tBoxName = 'testBox';
+      final tId = '1';
+      final tTask = MockTask();
+      final tReturnedTask = MockTask();
+      final tTaskInstance = MockManagedTask();
+
+      final tBox = MockBox<MockTask>();
+
+      when(HiveManager.hiveRepository.getBoxName<MockTask>())
+          .thenReturn(tBoxName);
+      when(HiveManager.hiveInterface.openBox(tBoxName))
+          .thenAnswer((_) => Future<MockBox<MockTask>>.value(tBox));
+
+      when(tTask.isInBox).thenReturn(false);
+      when(tTask.managedId).thenReturn(tId);
+
+      when(tTaskInstance.hiveObject).thenReturn(tTask);
+      when(tBox.get(tId)).thenReturn(tReturnedTask);
+
+      await HiveManager<MockTask>().delete(tTaskInstance);
+
+      verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+      verify(HiveManager.hiveInterface.openBox(tBoxName));
+      verify(tTask.managedId);
+      verify(tBox.get(tId));
+      verify(tTaskInstance.hiveObject = tReturnedTask);
+      verify(tTask.delete());
+      verify(tTaskInstance.hiveObject = null);
+
+      noMoreInteractions();
+    });
+
+    test('is in box', () async {
+      final tTask = MockTask();
+      final tTaskInstance = MockManagedTask();
+
+      when(tTaskInstance.hiveObject).thenReturn(tTask);
+      when(tTask.isInBox).thenReturn(true);
+
+      await HiveManager<MockTask>().delete(tTaskInstance);
+
+      verify(tTask.delete());
+      verify(tTaskInstance.hiveObject = null);
+
+      noMoreInteractions();
+    });
+  });
 }
