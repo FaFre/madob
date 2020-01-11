@@ -11,8 +11,11 @@ class HiveRepositoryImplementation {
 
    final Map<Type, String> _boxCache = {};
 
-   void _throwNotInitialized() =>
+   void _throwIfNotInitialized() {
+     if (!isInitialized) {
       throw HiveManagedError('Repository is not initialized');
+     }
+   }
 
    void init(String path) {
     assert(path != null && path.isNotEmpty);
@@ -32,9 +35,7 @@ class HiveRepositoryImplementation {
     assert(boxName != null && boxName.isNotEmpty);
     assert(adapter != null);
 
-    if (!isInitialized) {
-      _throwNotInitialized();
-    }
+    _throwIfNotInitialized();
 
     if (_boxCache.containsKey(T)) {
       throw HiveManagedError('Type $T is already registered');
@@ -49,10 +50,7 @@ class HiveRepositoryImplementation {
   }
 
    String getBoxName<T extends HiveObject>() {
-    //TODO: validation exceptions
-    if (!isInitialized) {
-      _throwNotInitialized();
-    }
+    _throwIfNotInitialized();
 
     if (!_boxCache.containsKey(T)) {
       throw HiveManagedError('Unknown $T has not been registered');
