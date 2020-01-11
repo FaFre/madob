@@ -1,13 +1,12 @@
 import 'package:hive/hive.dart';
 import 'package:hive_managed/src/entities/hive_object_reference.dart';
 import 'package:hive_managed/src/entities/key.dart';
-import 'package:hive_managed/src/managed/hive_managed.dart';
-import 'package:hive_managed/src/managed/hive_manager.dart';
+import 'package:hive_managed/src/entities/hive_managed.dart';
+import 'package:hive_managed/src/hive_manager.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'package:hive_managed/src/repositories/hive_repository.dart';
-import '../data/objects/data/entities/managed_task_model.dart';
+import 'package:hive_managed/src/hive_repository.dart';
 import '../data/objects/data/entities/task_model.dart';
 import '../data/objects/domain/entities/task.dart';
 import 'common.dart';

@@ -1,5 +1,5 @@
 import 'package:hive_managed/src/entities/hive_object_reference.dart';
-import 'package:hive_managed/src/managed/hive_managed.dart';
+import 'package:hive_managed/src/entities/hive_managed.dart';
 
 import '../../domain/entities/project.dart';
 import '../../domain/entities/task.dart';

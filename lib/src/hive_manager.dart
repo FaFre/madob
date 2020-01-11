@@ -3,7 +3,7 @@ import 'package:hive_managed/hive_managed.dart';
 import 'package:hive_managed/hive_managed_error.dart';
 import 'package:hive_managed/src/entities/hive_object_reference.dart';
 import 'package:hive_managed/src/entities/key.dart';
-import 'package:hive_managed/src/repositories/hive_repository.dart';
+import 'package:hive_managed/src/hive_repository.dart';
 import 'package:meta/meta.dart';
 
 class HiveManager<T extends HiveObject> {
