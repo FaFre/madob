@@ -96,6 +96,42 @@ class HiveManager<T extends HiveObject> {
     return hiveInstance.hiveObject.save();
   }
 
+  Future<R> setReference<R extends HiveObject>(
+      HiveObjectReference<T> hiveInstance,
+      R reference,
+      Future<void> Function(T, R) setReference) async {
+    assert(hiveInstance != null);
+    assert(setReference != null);
+
+    _checkInstanceOnNull(hiveInstance);
+
+    await ensureAndModify(hiveInstance);
+
+    R ensuredInstance;
+    if (reference != null) {
+      ensuredInstance = await HiveManager<R>().ensureAndReturn(reference);
+    }
+
+    if (!identical(reference, ensuredInstance)) {
+      await setReference(hiveInstance.hiveObject, ensuredInstance);
+      await hiveInstance.hiveObject.save();
+    }
+
+    return ensuredInstance;
+  }
+
+  Future<R> getOrUpdateReference<R extends HiveObject>(
+      HiveObjectReference<T> hiveInstance,
+      Future<R> Function(T) getReference,
+      Future<void> Function(T, R) setReference) async {
+    assert(hiveInstance != null);
+    assert(getReference != null);
+    assert(setReference != null);
+
+    return this.setReference(hiveInstance,
+        await getReference(hiveInstance.hiveObject), setReference);
+  }
+
   HiveManager._internal();
 
   factory HiveManager() {

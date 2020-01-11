@@ -303,4 +303,116 @@ void main() {
           throwsHiveManagedError('null'));
     });
   });
+
+  group('set reference', () {
+    test('should throw object null', () async {
+      final instance = MockManagedTask();
+
+      expect(
+          () async => await HiveManager<MockTask>().setReference(instance, null,
+                  (i, v) async {
+                return null;
+              }),
+          throwsHiveManagedError('null'));
+    });
+    test('set empty reference', () async {
+      final ensuredTest = EnsuredTest();
+
+      var setterCalled = false;
+      MockTask returendInstance;
+
+      await ensuredTest.run(() async {
+        returendInstance = await HiveManager<MockTask>().setReference<MockTask>(
+            ensuredTest.tTaskInstance, null, (instance, val) async {
+          setterCalled = true;
+        });
+      });
+
+      noMoreInteractions();
+
+      expect(setterCalled, equals(false));
+      expect(returendInstance, equals(null));
+    });
+
+    test('set reference', () async {
+      final ensuredTest = EnsuredTest();
+
+      var setterCalled = false;
+      MockTask returendInstance;
+      MockTask settedValue;
+      MockTask settedInstance;
+
+      await ensuredTest.run(() async {
+        returendInstance = await HiveManager<MockTask>().setReference<MockTask>(
+            ensuredTest.tTaskInstance, ensuredTest.tTask,
+            (instance, val) async {
+          settedValue = val;
+          settedInstance = instance;
+          setterCalled = true;
+        });
+      }, doVerification: false);
+
+      verify(HiveManager.hiveRepository.getBoxName<MockTask>()).called(2);
+      verify(HiveManager.hiveInterface.openBox(ensuredTest.tBoxName)).called(2);
+      verify(ensuredTest.tTask.managedId).called(2);
+      verify(ensuredTest.tBox.get(any)).called(2);
+      verify(ensuredTest.tTask.save());
+
+      expect(setterCalled, equals(true));
+      expect(returendInstance, equals(ensuredTest.tReturnedTask));
+      expect(settedValue, equals(ensuredTest.tReturnedTask));
+      expect(settedInstance, equals(ensuredTest.tTaskInstance.hiveObject));
+    });
+  });
+
+  group('get or update reference', () {
+    test('should throw object null', () async {
+      final instance = MockManagedTask();
+
+      expect(
+          () async => await HiveManager<MockTask>().getOrUpdateReference(
+                  instance, (_) async => null, (i, v) async {
+                return null;
+              }),
+          throwsHiveManagedError('null'));
+    });
+
+    test('set reference', () async {
+      final ensuredTest = EnsuredTest();
+
+      var getterCalled = false;
+      var setterCalled = false;
+      MockTask returendInstance;
+      MockTask settedValue;
+      MockTask getterInstance;
+      MockTask settedInstance;
+
+      await ensuredTest.run(() async {
+        returendInstance = await HiveManager<MockTask>()
+            .getOrUpdateReference<MockTask>(ensuredTest.tTaskInstance,
+                (instance) async {
+          getterCalled = true;
+          getterInstance = instance;
+          return ensuredTest.tTask;
+        }, (instance, val) async {
+          settedValue = val;
+          settedInstance = instance;
+          setterCalled = true;
+        });
+      }, doVerification: false);
+
+      verify(HiveManager.hiveRepository.getBoxName<MockTask>()).called(2);
+      verify(HiveManager.hiveInterface.openBox(ensuredTest.tBoxName)).called(2);
+      verify(ensuredTest.tTask.managedId).called(2);
+      verify(ensuredTest.tBox.get(any)).called(2);
+      verify(ensuredTest.tTask.save());
+
+      expect(getterCalled, equals(true));
+      expect(setterCalled, equals(true));
+      expect(returendInstance, equals(ensuredTest.tReturnedTask));
+      expect(settedValue, equals(ensuredTest.tReturnedTask));
+      expect(getterInstance, equals(ensuredTest.tTaskInstance.hiveObject));
+      expect(settedInstance, equals(ensuredTest.tTaskInstance.hiveObject));
+    });
+  });
 }
