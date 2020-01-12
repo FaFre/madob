@@ -22,11 +22,7 @@ class MockHiveObject extends Mock implements HiveObject {}
 
 class MockTask extends Mock implements Task {}
 
-class MockManagedTask extends Mock
-    implements
-        HiveManaged<MockTask, MockManagedTask>,
-        ITask,
-        HiveObjectReference<MockTask> {}
+class MockManagedTask extends Mock implements HiveManaged<MockTask>, ITask {}
 
 @immutable
 class TestData {

@@ -7,11 +7,7 @@ import '../../domain/entities/task.dart';
 import 'project_model.dart';
 import 'task_model.dart';
 
-class ManagedTask extends HiveManaged<Task, ManagedTask>
-    implements ITask, HiveObjectReference<Task> {
-  @override
-  Task hiveObject;
-
+class ManagedTask extends HiveManaged<Task> implements ITask {
   @override
   String get managedId => hiveObject.managedId;
 
