@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_managed/hive_managed.dart';
 import 'package:mockito/mockito.dart';
@@ -9,20 +10,27 @@ import 'common.dart';
 
 class MockHive extends Mock implements HiveInterface {}
 
-void main() {
+@immutable
+class TestData {
   final taskBox = 'taskBox';
   final taskAdapter = TaskAdapter();
 
   final projectBox = 'projectBox';
-  final projectAdpater = ProjectAdapter();
+  final projectAdapter = ProjectAdapter();
+}
 
+void main() {
   setUp(() {
     HiveRepository.hiveInterface = MockHive();
   });
 
   group('HiveRepository', () {
     test('.register() should throw because repsoitory uninitialized', () {
-      expect(() => HiveRepository.register<Task>(taskBox, taskAdapter),
+      final testData = TestData();
+
+      expect(
+          () => HiveRepository.register<Task>(
+              testData.taskBox, testData.taskAdapter),
           throwsHiveManagedError('not initialized'));
     });
     test('.getBoxName() should throw because repsoitory uninitialized', () {
@@ -47,34 +55,50 @@ void main() {
           throwsHiveManagedError('unknown'));
     });
     test('.register() should register project repository', () {
+      final testData = TestData();
+
       expect(HiveRepository.isInitialized, equals(true));
 
-      HiveRepository.register<Project>(projectBox, projectAdpater);
+      HiveRepository.register<Project>(
+          testData.projectBox, testData.projectAdapter);
 
-      verify(HiveRepository.hiveInterface.registerAdapter(projectAdpater));
-      expect(HiveRepository.getBoxName<Project>(), equals(projectBox));
+      verify(HiveRepository.hiveInterface
+          .registerAdapter(testData.projectAdapter));
+      expect(HiveRepository.getBoxName<Project>(), equals(testData.projectBox));
     });
 
     test('.register() should throw because of double box registration', () {
+      final testData = TestData();
+
       expect(HiveRepository.isInitialized, equals(true));
 
-      expect(() => HiveRepository.register<Task>(projectBox, taskAdapter),
-          throwsHiveManagedError('$projectBox is already registered'));
+      expect(
+          () => HiveRepository.register<Task>(
+              testData.projectBox, testData.taskAdapter),
+          throwsHiveManagedError(
+              '${testData.projectBox} is already registered'));
     });
 
     test('.register() should register task repository', () {
+      final testData = TestData();
+
       expect(HiveRepository.isInitialized, equals(true));
 
-      HiveRepository.register<Task>(taskBox, taskAdapter);
+      HiveRepository.register<Task>(testData.taskBox, testData.taskAdapter);
 
-      verify(HiveRepository.hiveInterface.registerAdapter(taskAdapter));
-      expect(HiveRepository.getBoxName<Task>(), equals(taskBox));
+      verify(
+          HiveRepository.hiveInterface.registerAdapter(testData.taskAdapter));
+      expect(HiveRepository.getBoxName<Task>(), equals(testData.taskBox));
     });
 
     test('.register() should throw because of double type registration', () {
+      final testData = TestData();
+
       expect(HiveRepository.isInitialized, equals(true));
 
-      expect(() => HiveRepository.register<Task>(taskBox, taskAdapter),
+      expect(
+          () => HiveRepository.register<Task>(
+              testData.taskBox, testData.taskAdapter),
           throwsHiveManagedError('$Task is already registered'));
     });
   });
