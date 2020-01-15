@@ -46,10 +46,10 @@ class EnsuredTest {
         .thenAnswer((_) => Future<MockBox<MockTask>>.value(testData.tBox));
 
     when(testData.tTask.isInBox).thenReturn(false);
-    when(testData.tTask.managedId).thenReturn(testData.tId);
+    when(testData.tTask.managedKey).thenReturn(testData.tId);
 
     when(testData.tReturnedTask.isInBox).thenReturn(true);
-    when(testData.tReturnedTask.managedId).thenReturn(testData.tId);
+    when(testData.tReturnedTask.managedKey).thenReturn(testData.tId);
     when(testData.tReturnedTask.title)
         .thenAnswer((_) => Future.value(testData.tReturnedTaskTitle));
 
@@ -63,7 +63,7 @@ class EnsuredTest {
     if (doVerification) {
       verify(HiveManager.hiveRepository.getBoxName<MockTask>());
       verify(HiveManager.hiveInterface.openBox(testData.tBoxName));
-      verify(testData.tTask.managedId);
+      verify(testData.tTask.managedKey);
       verify(testData.tBox.get(any));
     }
   }
@@ -173,7 +173,7 @@ void main() {
             .thenAnswer((_) => Future<MockBox<MockTask>>.value(testData.tBox));
 
         when(testData.tTask.isInBox).thenReturn(false);
-        when(testData.tTask.managedId).thenReturn(testData.tId);
+        when(testData.tTask.managedKey).thenReturn(testData.tId);
 
         when(testData.tBox.get(testData.tId)).thenReturn(null);
 
@@ -182,7 +182,7 @@ void main() {
 
         verify(HiveManager.hiveRepository.getBoxName<MockTask>());
         verify(HiveManager.hiveInterface.openBox(testData.tBoxName));
-        verify(testData.tTask.managedId);
+        verify(testData.tTask.managedKey);
         verify(testData.tBox.get(testData.tId));
         verify(testData.tBox.put(testData.tId, testData.tTask));
 
@@ -195,7 +195,7 @@ void main() {
         final testData = TestData();
 
         when(testData.tTask.isInBox).thenReturn(false);
-        when(testData.tTask.managedId).thenReturn(null);
+        when(testData.tTask.managedKey).thenReturn(null);
 
         zeroInteractions();
 
@@ -375,7 +375,7 @@ void main() {
         verify(HiveManager.hiveRepository.getBoxName<MockTask>()).called(2);
         verify(HiveManager.hiveInterface.openBox(ensuredTest.testData.tBoxName))
             .called(2);
-        verify(ensuredTest.testData.tTask.managedId).called(2);
+        verify(ensuredTest.testData.tTask.managedKey).called(2);
         verify(ensuredTest.testData.tBox.get(any)).called(2);
         verify(ensuredTest.testData.tTask.save());
 
@@ -430,7 +430,7 @@ void main() {
         verify(HiveManager.hiveRepository.getBoxName<MockTask>()).called(2);
         verify(HiveManager.hiveInterface.openBox(ensuredTest.testData.tBoxName))
             .called(2);
-        verify(ensuredTest.testData.tTask.managedId).called(2);
+        verify(ensuredTest.testData.tTask.managedKey).called(2);
         verify(ensuredTest.testData.tBox.get(any)).called(2);
         verify(ensuredTest.testData.tTask.save());
 
@@ -469,7 +469,7 @@ void main() {
             .thenAnswer((_) => Future<MockBox<MockTask>>.value(testData.tBox));
 
         when(testData.tTask.isInBox).thenReturn(false);
-        when(testData.tTask.managedId).thenReturn(testData.tId);
+        when(testData.tTask.managedKey).thenReturn(testData.tId);
 
         when(testData.tTaskInstance.hiveObject).thenReturn(testData.tTask);
         when(testData.tBox.get(testData.tId)).thenReturn(null);
@@ -480,7 +480,7 @@ void main() {
 
         verify(HiveManager.hiveRepository.getBoxName<MockTask>());
         verify(HiveManager.hiveInterface.openBox(testData.tBoxName));
-        verify(testData.tTask.managedId);
+        verify(testData.tTask.managedKey);
 
         noMoreInteractions();
       });
@@ -494,7 +494,7 @@ void main() {
             .thenAnswer((_) => Future<MockBox<MockTask>>.value(testData.tBox));
 
         when(testData.tTask.isInBox).thenReturn(false);
-        when(testData.tTask.managedId).thenReturn(testData.tId);
+        when(testData.tTask.managedKey).thenReturn(testData.tId);
 
         when(testData.tTaskInstance.hiveObject).thenReturn(testData.tTask);
         when(testData.tBox.get(testData.tId))
@@ -504,7 +504,7 @@ void main() {
 
         verify(HiveManager.hiveRepository.getBoxName<MockTask>());
         verify(HiveManager.hiveInterface.openBox(testData.tBoxName));
-        verify(testData.tTask.managedId);
+        verify(testData.tTask.managedKey);
         verify(testData.tBox.get(testData.tId));
         verify(testData.tTaskInstance.hiveObject = testData.tReturnedTask);
         verify(testData.tTask.delete());

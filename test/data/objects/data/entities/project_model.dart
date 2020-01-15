@@ -10,7 +10,7 @@ class Project extends HiveObject implements IProject {
   String _id;
 
   @override
-  String get managedId => _id;
+  String get managedKey => _id;
 
   @HiveField(1)
   String _title;

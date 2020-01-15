@@ -1,3 +1,3 @@
 abstract class IKey {
-  dynamic get managedId;
+  dynamic get managedKey;
 }

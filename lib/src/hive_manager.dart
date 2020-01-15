@@ -40,7 +40,7 @@ class HiveManager<T extends HiveObject> {
           'Unable to get Id because $T does not implement $IKey');
     }
 
-    return (instance as IKey).managedId;
+    return (instance as IKey).managedKey;
   }
 
   Future<Box<T>> getBox() async {
