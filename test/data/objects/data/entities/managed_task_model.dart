@@ -1,5 +1,4 @@
 import 'package:hive_managed/hive_managed.dart';
-import 'package:hive_managed/src/entities/hive_object_reference.dart';
 import 'package:hive_managed/src/entities/hive_managed.dart';
 
 import '../../domain/entities/project.dart';
@@ -26,7 +25,7 @@ class ManagedTask extends HiveManaged<Task> implements ITask {
 
   //It also works with references to other HiveObjects in different boxes:
   @override
-  Future<IProject> get project async => getOrUpdateReference<Project>(
+  Future<IProject> get project => getOrUpdateReference<Project>(
       (task) => task.project,
       (task, newProject) => task.setProject(newProject));
 

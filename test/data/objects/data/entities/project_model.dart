@@ -16,9 +16,9 @@ class Project extends HiveObject implements IProject {
   String _title;
 
   @override
-  String get title => _title;
+  Future<String> get title => Future.value(_title);
   @override
-  set title(newTitle) {
+  Future<void> setTitle(String newTitle) async {
     _title = newTitle;
   }
 
