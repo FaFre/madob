@@ -138,6 +138,17 @@ class HiveManager<T extends HiveObject> {
         await getReference(hiveInstance.hiveObject), setReference);
   }
 
+  Future<T> initialize(
+      HiveObjectReference<T> hiveInstance, T Function() newInstance) async {
+    assert(newInstance != null);
+
+    hiveInstance.hiveObject = newInstance();
+    _checkInstanceOnNull(hiveInstance);
+
+    await ensureAndModify(hiveInstance);
+    return hiveInstance.hiveObject;
+  }
+
   Future<void> delete(HiveObjectReference<T> hiveInstance) async {
     assert(hiveInstance != null);
 

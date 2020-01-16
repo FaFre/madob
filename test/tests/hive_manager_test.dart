@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_managed/src/entities/hive_object_reference.dart';
 import 'package:hive_managed/src/entities/key.dart';
 import 'package:hive_managed/src/entities/hive_managed.dart';
 import 'package:hive_managed/src/hive_manager.dart';
@@ -444,6 +443,56 @@ void main() {
             same(ensuredTest.testData.tTaskInstance.hiveObject));
         expect(settedInstance,
             same(ensuredTest.testData.tTaskInstance.hiveObject));
+      });
+    });
+
+    group('.initialize()', () {
+      test('should create new instance and ensures it', () async {
+        final testData = TestData();
+
+        var calledInstance = false;
+        MockTask createInstance() {
+          calledInstance = true;
+          return testData.tTask;
+        }
+
+        when(testData.tTaskInstance.hiveObject).thenReturn(testData.tTask);
+        when(testData.tTask.isInBox).thenReturn(true);
+
+        expect(
+            await HiveManager<MockTask>()
+                .initialize(testData.tTaskInstance, createInstance),
+            equals(testData.tTaskInstance.hiveObject));
+
+        verify(testData.tTaskInstance.hiveObject = testData.tTask);
+
+        noMoreInteractions();
+
+        expect(calledInstance, isTrue);
+      });
+
+      test('should throw because createInstance returns null', () async {
+        final testData = TestData();
+
+        var calledInstance = false;
+        MockTask createInstance() {
+          calledInstance = true;
+          return null;
+        }
+
+        when(testData.tTaskInstance.hiveObject).thenReturn(null);
+        when(testData.tTask.isInBox).thenReturn(true);
+
+        await expectLater(
+            HiveManager<MockTask>()
+                .initialize(testData.tTaskInstance, createInstance),
+            throwsHiveManagedError('null'));
+
+        verify(testData.tTaskInstance.hiveObject = null);
+
+        noMoreInteractions();
+
+        expect(calledInstance, isTrue);
       });
     });
 

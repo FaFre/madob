@@ -59,6 +59,10 @@ class HiveManaged<T extends HiveObject> implements HiveObjectReference<T> {
     return hive.getOrUpdateReference(this, getReference, setReference);
   }
 
+  Future<T> initialize(T Function() newInstance) {
+    return hive.initialize(this, newInstance);
+  }
+
   Future<void> delete() async {
     _throwIfUninitialized();
     return hive.delete(this);
