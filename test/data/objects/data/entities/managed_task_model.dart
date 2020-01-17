@@ -26,7 +26,7 @@ class ManagedTask extends HiveManaged<Task> implements ITask {
   //It also works with references to other HiveObjects in different boxes:
   @override
   Future<IProject> get project => getOrUpdateReference<Project>(
-      (task) => task.project,
+      (task) async => await task.project,
       (task, newProject) => task.setProject(newProject));
 
   @override

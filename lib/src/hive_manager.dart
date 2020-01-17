@@ -113,17 +113,13 @@ class HiveManager<T extends HiveObject> {
 
     await ensureAndModify(hiveInstance);
 
-    R ensuredInstance;
-    if (reference != null) {
-      ensuredInstance = await HiveManager<R>().ensureAndReturn(reference);
-    }
+    final ensuredReference = (reference != null)
+        ? await HiveManager<R>().ensureAndReturn(reference)
+        : null;
+    await setReference(hiveInstance.hiveObject, ensuredReference);
+    await hiveInstance.hiveObject.save();
 
-    if (!identical(reference, ensuredInstance)) {
-      await setReference(hiveInstance.hiveObject, ensuredInstance);
-      await hiveInstance.hiveObject.save();
-    }
-
-    return ensuredInstance;
+    return ensuredReference;
   }
 
   Future<R> getOrUpdateReference<R extends HiveObject>(

@@ -349,7 +349,7 @@ void main() {
 
         noMoreInteractions();
 
-        expect(setterCalled, equals(false));
+        expect(setterCalled, equals(true));
         expect(returendInstance, equals(null));
       });
 
