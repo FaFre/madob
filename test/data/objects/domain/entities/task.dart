@@ -5,6 +5,7 @@ import 'project.dart';
 abstract class ITask implements IKey {
   @override
   String get managedKey;
+
   Future<String> get title;
   Future<IProject> get project;
 
