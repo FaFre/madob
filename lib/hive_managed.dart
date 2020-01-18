@@ -6,6 +6,9 @@ export 'package:hive_managed/src/entities/key.dart';
 export 'package:hive_managed/src/entities/hive_object_reference.dart';
 export 'package:hive_managed/src/entities/hive_managed.dart';
 
+export 'package:hive_managed/src/helper/strong_uuid.dart';
+
 export 'package:hive_managed/src/hive_repository.dart';
 
-final HiveRepositoryImplementation HiveRepository = HiveRepositoryImplementation();
+final HiveRepositoryImplementation HiveRepository =
+    HiveRepositoryImplementation();
