@@ -1,19 +1,19 @@
 import 'package:hive_managed/hive_managed.dart';
 import 'package:hive_managed/src/helper/strong_uuid.dart';
+import 'package:hive_managed/src/helper/path_provider.dart';
 import 'package:test/test.dart';
 
 import '../../data/objects/data/entities/managed_project_model.dart';
 import '../../data/objects/data/entities/managed_task_model.dart';
 import '../../data/objects/data/entities/project_model.dart';
 import '../../data/objects/data/entities/task_model.dart';
-import '../common.dart';
 
 void main() {
   String path;
   ManagedTask task;
 
   setUpAll(() async {
-    path = (await getTempDir()).path;
+    path = (await PathProvider().getTempDirectory()).path;
   });
 
   group('Integration', () {
