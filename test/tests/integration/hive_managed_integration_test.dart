@@ -3,10 +3,10 @@ import 'package:hive_managed/src/helper/strong_uuid.dart';
 import 'package:hive_managed/src/helper/path_provider.dart';
 import 'package:test/test.dart';
 
-import '../../data/objects/data/entities/managed_project_model.dart';
-import '../../data/objects/data/entities/managed_task_model.dart';
-import '../../data/objects/data/entities/project_model.dart';
-import '../../data/objects/data/entities/task_model.dart';
+import 'package:hive_managed/example/data/objects/data/entities/managed_project_model.dart';
+import 'package:hive_managed/example/data/objects/data/entities/managed_task_model.dart';
+import 'package:hive_managed/example/data/objects/data/entities/project_model.dart';
+import 'package:hive_managed/example/data/objects/data/entities/task_model.dart';
 
 void main() {
   String path;

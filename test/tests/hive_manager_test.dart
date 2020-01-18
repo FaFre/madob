@@ -7,8 +7,8 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:hive_managed/src/hive_repository.dart';
-import '../data/objects/data/entities/task_model.dart';
-import '../data/objects/domain/entities/task.dart';
+import 'package:hive_managed/example/data/objects/data/entities/task_model.dart';
+import 'package:hive_managed/example/data/objects/domain/entities/task.dart';
 import 'common.dart';
 
 class MockHive extends Mock implements HiveInterface {}

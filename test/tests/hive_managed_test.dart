@@ -2,8 +2,8 @@ import 'package:hive_managed/src/hive_manager.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import '../data/objects/data/entities/managed_task_model.dart';
-import '../data/objects/data/entities/task_model.dart';
+import 'package:hive_managed/example/data/objects/data/entities/managed_task_model.dart';
+import 'package:hive_managed/example/data/objects/data/entities/task_model.dart';
 import 'common.dart';
 
 class MockTask extends Mock implements Task {}
