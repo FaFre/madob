@@ -52,15 +52,15 @@ class HiveManager<T extends HiveObject> {
 
   Future<T> _get(dynamic key) async => (await getBox()).get(key);
 
-  Future<void> ensureAndModify(HiveObjectReference<T> instance) async {
+  Future<void> ensure(HiveObjectReference<T> instance) async {
     assert(instance != null);
 
     _checkInstanceOnNull(instance);
 
-    instance.hiveObject = await ensureAndReturn(instance.hiveObject);
+    instance.hiveObject = await ensureObject(instance.hiveObject);
   }
 
-  Future<T> ensureAndReturn(T instance) async {
+  Future<T> ensureObject(T instance) async {
     assert(instance != null);
 
     if (!instance.isInBox) {
@@ -85,7 +85,7 @@ class HiveManager<T extends HiveObject> {
 
     _checkInstanceOnNull(hiveInstance);
 
-    if (!uninsuredGet) await ensureAndModify(hiveInstance);
+    if (!uninsuredGet) await ensure(hiveInstance);
     return getValue(hiveInstance.hiveObject);
   }
 
@@ -96,7 +96,7 @@ class HiveManager<T extends HiveObject> {
 
     _checkInstanceOnNull(hiveInstance);
 
-    await ensureAndModify(hiveInstance);
+    await ensure(hiveInstance);
     await writeValue(hiveInstance.hiveObject);
 
     return hiveInstance.hiveObject.save();
@@ -111,10 +111,10 @@ class HiveManager<T extends HiveObject> {
 
     _checkInstanceOnNull(hiveInstance);
 
-    await ensureAndModify(hiveInstance);
+    await ensure(hiveInstance);
 
     final ensuredReference = (reference != null)
-        ? await HiveManager<R>().ensureAndReturn(reference)
+        ? await HiveManager<R>().ensureObject(reference)
         : null;
     await setReference(hiveInstance.hiveObject, ensuredReference);
     await hiveInstance.hiveObject.save();
@@ -141,7 +141,7 @@ class HiveManager<T extends HiveObject> {
     hiveInstance.hiveObject = newInstance();
     _checkInstanceOnNull(hiveInstance);
 
-    await ensureAndModify(hiveInstance);
+    await ensure(hiveInstance);
     return hiveInstance.hiveObject;
   }
 

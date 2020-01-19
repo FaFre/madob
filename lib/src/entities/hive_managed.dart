@@ -28,30 +28,35 @@ class HiveManaged<T extends HiveObject> implements HiveObjectReference<T> {
 
   Future<Box<T>> getBox() async => hive.getBox();
 
-  Future<void> ensureAndModify() async => hive.ensureAndModify(this);
+  Future<void> ensure() async => hive.ensure(this);
 
-  Future<T> ensureAndReturn() async {
+  @protected
+  Future<T> ensureObject() async {
     _throwIfUninitialized();
-    return hive.ensureAndReturn(hiveObject);
+    return hive.ensureObject(hiveObject);
   }
 
+  @protected
   Future<R> getValue<R>(Future<R> Function(T) getValue,
       {uninsuredGet = false}) {
     _throwIfUninitialized();
     return hive.getValue(this, getValue, uninsuredGet: uninsuredGet);
   }
 
+  @protected
   Future<void> setValue(Future<void> Function(T) writeValue) async {
     _throwIfUninitialized();
     return hive.setValue(this, writeValue);
   }
 
+  @protected
   Future<R> setReference<R extends HiveObject>(
       R reference, Future<void> Function(T, R) setReference) async {
     _throwIfUninitialized();
     return hive.setReference(this, reference, setReference);
   }
 
+  @protected
   Future<R> getOrUpdateReference<R extends HiveObject>(
       Future<R> Function(T) getReference,
       Future<void> Function(T, R) setReference) async {

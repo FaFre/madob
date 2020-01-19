@@ -140,7 +140,7 @@ void main() {
         when(testData.tTask.isInBox).thenReturn(true);
 
         final returnedTask =
-            await HiveManager<MockTask>().ensureAndReturn(testData.tTask);
+            await HiveManager<MockTask>().ensureObject(testData.tTask);
 
         verify(testData.tTask.isInBox);
 
@@ -155,7 +155,7 @@ void main() {
         final ensuredTest = EnsuredTest();
         await ensuredTest.run(() async => returnedTask =
             await HiveManager<MockTask>()
-                .ensureAndReturn(ensuredTest.testData.tTask));
+                .ensureObject(ensuredTest.testData.tTask));
 
         noMoreInteractions();
 
@@ -177,7 +177,7 @@ void main() {
         when(testData.tBox.get(testData.tId)).thenReturn(null);
 
         final returnedTask =
-            await HiveManager<MockTask>().ensureAndReturn(testData.tTask);
+            await HiveManager<MockTask>().ensureObject(testData.tTask);
 
         verify(HiveManager.hiveRepository.getBoxName<MockTask>());
         verify(HiveManager.hiveInterface.openBox(testData.tBoxName));
@@ -198,7 +198,7 @@ void main() {
 
         zeroInteractions();
 
-        expect(() => HiveManager<MockTask>().ensureAndReturn(testData.tTask),
+        expect(() => HiveManager<MockTask>().ensureObject(testData.tTask),
             throwsHiveManagedError('null'));
       });
     });
@@ -209,15 +209,14 @@ void main() {
 
         zeroInteractions();
 
-        expect(
-            () => HiveManager<Task>().ensureAndModify(testData.tTaskInstance),
+        expect(() => HiveManager<Task>().ensure(testData.tTaskInstance),
             throwsHiveManagedError('null'));
       });
 
       test('should modify returned obj from ensureAndModify', () async {
         final ensuredTest = EnsuredTest();
         await ensuredTest.run(() async => await HiveManager<MockTask>()
-            .ensureAndModify(ensuredTest.testData.tTaskInstance));
+            .ensure(ensuredTest.testData.tTaskInstance));
 
         verify(ensuredTest.testData.tTaskInstance.hiveObject =
             ensuredTest.testData.tReturnedTask);
