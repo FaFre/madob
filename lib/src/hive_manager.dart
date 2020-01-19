@@ -63,7 +63,7 @@ class HiveManager<T extends HiveObject> {
   Future<T> ensureObject(T instance) async {
     assert(instance != null);
 
-    if (!instance.isInBox) {
+    if (!instance.isInBox || !(instance.box?.isOpen ?? false)) {
       final id = _getValidIdOrThrow(instance);
 
       final existingItem = await _get(id);

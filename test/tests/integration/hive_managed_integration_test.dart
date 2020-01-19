@@ -37,7 +37,7 @@ void main() {
           task = ManagedTask();
           await task.initialize(() => Task(taskId));
 
-          await expectLater(task.getId(), equals(taskId));
+          expect(task.getId(), equals(taskId));
           expect(task.hiveObject.isInBox, isTrue);
         });
 
@@ -53,7 +53,7 @@ void main() {
           final regainedTask = ManagedTask();
           await regainedTask.initialize(() => Task(taskId));
 
-          expect(await regainedTask.title, taskTitle);
+          expect(await regainedTask.title, equals(taskTitle));
         });
 
         test('.setProject()', () async {
@@ -65,6 +65,13 @@ void main() {
         });
       });
 
+      group('HiveRepository', () {
+        test('.closeBox()', () async {
+          await HiveRepository.closeBox<Task>();
+          expect(task.hiveObject.box.isOpen, isFalse);
+        });
+      });
+
       group('Project', () {
         test('.setTitle()', () async {
           final regainedProject = ManagedProject();
@@ -73,6 +80,26 @@ void main() {
           await (await task.project).setTitle(projectTitle);
 
           expect(await regainedProject.title, equals(projectTitle));
+        });
+      });
+
+      group('Regained Task', () {
+        test('get project title (changed through project)', () async {
+          expect(await (await task.project).title, equals(projectTitle));
+        });
+
+        test('check parallel sync on set', () async {
+          final taskOne = ManagedTask();
+          await taskOne.initialize(() => Task(taskId));
+
+          final taskTwo = ManagedTask();
+          await taskTwo.initialize(() => Task(taskId));
+
+          await taskTwo.setTitle('Sync #1');
+          expect(await taskOne.title, equals(await taskTwo.title));
+
+          await taskOne.setTitle('Sync #2');
+          expect(await taskOne.title, equals(await taskTwo.title));
         });
       });
     });

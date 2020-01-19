@@ -45,6 +45,8 @@ class EnsuredTest {
         .thenAnswer((_) => Future<MockBox<MockTask>>.value(testData.tBox));
 
     when(testData.tTask.isInBox).thenReturn(false);
+    when(testData.tTask.box).thenReturn(testData.tBox);
+    when(testData.tBox.isOpen).thenReturn(true);
     when(testData.tTask.managedKey).thenReturn(testData.tId);
 
     when(testData.tReturnedTask.isInBox).thenReturn(true);
@@ -138,6 +140,8 @@ void main() {
         final testData = TestData();
 
         when(testData.tTask.isInBox).thenReturn(true);
+        when(testData.tTask.box).thenReturn(testData.tBox);
+        when(testData.tBox.isOpen).thenReturn(true);
 
         final returnedTask =
             await HiveManager<MockTask>().ensureObject(testData.tTask);
@@ -149,7 +153,7 @@ void main() {
         expect(returnedTask, same(testData.tTask));
       });
 
-      test('should return via get', () async {
+      test('should return via get (not in box)', () async {
         MockTask returnedTask;
 
         final ensuredTest = EnsuredTest();
@@ -188,6 +192,41 @@ void main() {
         noMoreInteractions();
 
         expect(returnedTask, same(testData.tTask));
+      });
+
+      test('should return via get (box closed)', () async {
+        final testData = TestData();
+
+        when(HiveManager.hiveRepository.getBoxName<MockTask>())
+            .thenReturn(testData.tBoxName);
+        when(HiveManager.hiveInterface.openBox(testData.tBoxName))
+            .thenAnswer((_) => Future<MockBox<MockTask>>.value(testData.tBox));
+
+        when(testData.tTask.isInBox).thenReturn(true);
+        when(testData.tTask.box).thenReturn(testData.tBox);
+        when(testData.tBox.isOpen).thenReturn(false);
+        when(testData.tTask.managedKey).thenReturn(testData.tId);
+
+        when(testData.tReturnedTask.isInBox).thenReturn(true);
+        when(testData.tReturnedTask.managedKey).thenReturn(testData.tId);
+        when(testData.tReturnedTask.title)
+            .thenAnswer((_) => Future.value(testData.tReturnedTaskTitle));
+
+        when(testData.tTaskInstance.hiveObject).thenReturn(testData.tTask);
+        when(testData.tBox.get(testData.tId))
+            .thenReturn(testData.tReturnedTask);
+
+        final returnedTask =
+            await HiveManager<MockTask>().ensureObject(testData.tTask);
+
+        verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+        verify(HiveManager.hiveInterface.openBox(testData.tBoxName));
+        verify(testData.tTask.managedKey);
+        verify(testData.tBox.get(any));
+
+        noMoreInteractions();
+
+        expect(returnedTask, same(testData.tReturnedTask));
       });
 
       test('should throw because key is null', () {
@@ -457,6 +496,8 @@ void main() {
 
         when(testData.tTaskInstance.hiveObject).thenReturn(testData.tTask);
         when(testData.tTask.isInBox).thenReturn(true);
+        when(testData.tTask.box).thenReturn(testData.tBox);
+        when(testData.tBox.isOpen).thenReturn(true);
 
         expect(
             await HiveManager<MockTask>()
@@ -480,7 +521,6 @@ void main() {
         }
 
         when(testData.tTaskInstance.hiveObject).thenReturn(null);
-        when(testData.tTask.isInBox).thenReturn(true);
 
         await expectLater(
             HiveManager<MockTask>()
