@@ -17,6 +17,12 @@ class HiveRepositoryImplementation {
     }
   }
 
+  void _throwIfNotRegistered<T>() {
+    if (!_boxCache.containsKey(T)) {
+      throw HiveManagedError('Unknown $T has not been registered');
+    }
+  }
+
   void init(String path) {
     assert(path != null && path.isNotEmpty);
 
@@ -50,11 +56,19 @@ class HiveRepositoryImplementation {
 
   String getBoxName<T extends HiveObject>() {
     _throwIfNotInitialized();
-
-    if (!_boxCache.containsKey(T)) {
-      throw HiveManagedError('Unknown $T has not been registered');
-    }
+    _throwIfNotRegistered<T>();
 
     return _boxCache[T];
+  }
+
+  Future<void> closeBox<T extends HiveObject>() async {
+    _throwIfNotInitialized();
+    _throwIfNotRegistered<T>();
+
+    final boxName = getBoxName<T>();
+
+    if (hiveInterface.isBoxOpen(boxName)) {
+      await hiveInterface.box<T>(boxName).close();
+    }
   }
 }
