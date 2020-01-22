@@ -1,6 +1,6 @@
 name: hive_managed
 description: HiveManaged is a super simple and easy to use highly-asynchronous library for database-synchronized objects. It is built upon hive, the blazing-fast key-value database.
-version: 0.0.1
+version: 0.1.0
 homepage: https://github.com/FaFre/hive_managed
 
 environment:
