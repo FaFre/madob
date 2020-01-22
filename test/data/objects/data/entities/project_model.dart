@@ -7,7 +7,7 @@ part 'project_model.g.dart';
 @HiveType(typeId: 0)
 class Project extends HiveObject implements IProject {
   @HiveField(0)
-  String _id;
+  final String _id;
 
   @override
   String get managedKey => _id;

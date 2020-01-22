@@ -9,7 +9,7 @@ part 'task_model.g.dart';
 @HiveType(typeId: 1)
 class Task extends HiveObject implements ITask {
   @HiveField(0)
-  String _id;
+  final String _id;
 
   @override
   String get managedKey => _id;
