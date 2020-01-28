@@ -1,10 +1,10 @@
 import 'package:hive_managed/hive_managed.dart';
 import 'package:hive_managed/src/helper/path_provider.dart';
 
-import '../../test/data/objects/data/entities/project_model.dart';
-import '../../test/data/objects/data/entities/task_model.dart';
-import '../../test/data/objects/data/entities/managed_task_model.dart';
-import '../../test/data/objects/data/entities/managed_project_model.dart';
+import 'package:hive_managed_example/data/objects/data/entities/managed_task_model.dart';
+import 'package:hive_managed_example/data/objects/data/entities/task_model.dart';
+import 'package:hive_managed_example/data/objects/data/entities/project_model.dart';
+import 'package:hive_managed_example/data/objects/data/entities/managed_project_model.dart';
 
 void main() async {
   final directory = await PathProvider().getTempDirectory();
