@@ -36,14 +36,14 @@ class HiveRepositoryImplementation {
     }
   }
 
-  void register<T extends HiveObject>(String boxName, TypeAdapter<T> adapter) {
+  void register<K extends HiveObject>(String boxName, TypeAdapter<K> adapter) {
     assert(boxName != null && boxName.isNotEmpty);
     assert(adapter != null);
 
     _throwIfNotInitialized();
 
-    if (_boxCache.containsKey(T)) {
-      throw HiveManagedError('Type $T is already registered');
+    if (_boxCache.containsKey(K)) {
+      throw HiveManagedError('Type $K is already registered');
     }
 
     if (_boxCache.containsValue(boxName)) {
@@ -51,24 +51,24 @@ class HiveRepositoryImplementation {
     }
 
     hiveInterface.registerAdapter(adapter);
-    _boxCache.putIfAbsent(T, () => boxName);
+    _boxCache.putIfAbsent(K, () => boxName);
   }
 
-  String getBoxName<T extends HiveObject>() {
+  String getBoxName<K extends HiveObject>() {
     _throwIfNotInitialized();
-    _throwIfNotRegistered<T>();
+    _throwIfNotRegistered<K>();
 
-    return _boxCache[T];
+    return _boxCache[K];
   }
 
-  Future<void> closeBox<T extends HiveObject>() async {
+  Future<void> closeBox<K extends HiveObject>() async {
     _throwIfNotInitialized();
-    _throwIfNotRegistered<T>();
+    _throwIfNotRegistered<K>();
 
-    final boxName = getBoxName<T>();
+    final boxName = getBoxName<K>();
 
     if (hiveInterface.isBoxOpen(boxName)) {
-      await hiveInterface.box<T>(boxName).close();
+      await hiveInterface.box<K>(boxName).close();
     }
   }
 }

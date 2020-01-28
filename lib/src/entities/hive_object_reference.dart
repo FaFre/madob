@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
 
-abstract class HiveObjectReference<T extends HiveObject> {
-  T hiveObject;
+abstract class HiveObjectReference<E extends HiveObject> {
+  E hiveObject;
 }

@@ -6,7 +6,7 @@ import 'package:hive_managed/src/entities/key.dart';
 import 'package:hive_managed/src/hive_repository.dart';
 import 'package:meta/meta.dart';
 
-class HiveManager<T extends HiveObject> {
+class HiveManager<E extends HiveObject> {
   static final Map<Type, HiveManager> _managerCache = {};
 
   @visibleForTesting
@@ -15,44 +15,44 @@ class HiveManager<T extends HiveObject> {
   @visibleForTesting
   static HiveRepositoryImplementation hiveRepository = HiveRepository;
 
-  void _checkInstanceOnNull(HiveObjectReference<T> instance) {
+  void _checkInstanceOnNull(HiveObjectReference<E> instance) {
     if (instance.hiveObject == null) {
       throw HiveManagedError(
-          'Cannot work with empty/null instance of $T in $HiveObjectReference');
+          'Cannot work with empty/null instance of $E in $HiveObjectReference');
     }
   }
 
-  dynamic _getValidIdOrThrow(T instance) {
+  dynamic _getValidIdOrThrow(E instance) {
     final id = getId(instance);
     if (id == null) {
       throw HiveManagedError(
-          'Instance of $T is not in a box. Id of the object is null. Valid Id is required for all operations');
+          'Instance of $E is not in a box. Id of the object is null. Valid Id is required for all operations');
     }
 
     return id;
   }
 
-  dynamic getId(T instance) {
+  dynamic getId(E instance) {
     assert(instance != null);
 
     if (instance is! IKey) {
       throw HiveManagedError(
-          'Unable to get Id because $T does not implement $IKey');
+          'Unable to get Id because $E does not implement $IKey');
     }
 
     return (instance as IKey).managedKey;
   }
 
-  Future<Box<T>> getBox() async {
-    return hiveInterface.openBox(hiveRepository.getBoxName<T>());
+  Future<Box<E>> getBox() async {
+    return hiveInterface.openBox(hiveRepository.getBoxName<E>());
   }
 
-  Future<void> _put(T instance) async =>
+  Future<void> _put(E instance) async =>
       (await getBox()).put(getId(instance), instance);
 
-  Future<T> _get(dynamic key) async => (await getBox()).get(key);
+  Future<E> _get(dynamic key) async => (await getBox()).get(key);
 
-  Future<void> ensure(HiveObjectReference<T> instance) async {
+  Future<void> ensure(HiveObjectReference<E> instance) async {
     assert(instance != null);
 
     _checkInstanceOnNull(instance);
@@ -60,7 +60,7 @@ class HiveManager<T extends HiveObject> {
     instance.hiveObject = await ensureObject(instance.hiveObject);
   }
 
-  Future<T> ensureObject(T instance) async {
+  Future<E> ensureObject(E instance) async {
     assert(instance != null);
 
     if (!instance.isInBox || !(instance.box?.isOpen ?? false)) {
@@ -78,7 +78,7 @@ class HiveManager<T extends HiveObject> {
   }
 
   Future<R> getValue<R>(
-      HiveObjectReference<T> hiveInstance, Future<R> Function(T) getValue,
+      HiveObjectReference<E> hiveInstance, Future<R> Function(E) getValue,
       {uninsuredGet = false}) async {
     assert(hiveInstance != null);
     assert(getValue != null);
@@ -89,8 +89,8 @@ class HiveManager<T extends HiveObject> {
     return getValue(hiveInstance.hiveObject);
   }
 
-  Future<void> setValue(HiveObjectReference<T> hiveInstance,
-      Future<void> Function(T) writeValue) async {
+  Future<void> setValue(HiveObjectReference<E> hiveInstance,
+      Future<void> Function(E) writeValue) async {
     assert(hiveInstance != null);
     assert(writeValue != null);
 
@@ -103,9 +103,9 @@ class HiveManager<T extends HiveObject> {
   }
 
   Future<R> setReference<R extends HiveObject>(
-      HiveObjectReference<T> hiveInstance,
+      HiveObjectReference<E> hiveInstance,
       R reference,
-      Future<void> Function(T, R) setReference) async {
+      Future<void> Function(E, R) setReference) async {
     assert(hiveInstance != null);
     assert(setReference != null);
 
@@ -123,9 +123,9 @@ class HiveManager<T extends HiveObject> {
   }
 
   Future<R> getOrUpdateReference<R extends HiveObject>(
-      HiveObjectReference<T> hiveInstance,
-      Future<R> Function(T) getReference,
-      Future<void> Function(T, R) setReference) async {
+      HiveObjectReference<E> hiveInstance,
+      Future<R> Function(E) getReference,
+      Future<void> Function(E, R) setReference) async {
     assert(hiveInstance != null);
     assert(getReference != null);
     assert(setReference != null);
@@ -134,8 +134,8 @@ class HiveManager<T extends HiveObject> {
         await getReference(hiveInstance.hiveObject), setReference);
   }
 
-  Future<T> initialize(
-      HiveObjectReference<T> hiveInstance, T Function() newInstance) async {
+  Future<E> initialize(
+      HiveObjectReference<E> hiveInstance, E Function() newInstance) async {
     assert(newInstance != null);
 
     hiveInstance.hiveObject = newInstance();
@@ -145,7 +145,7 @@ class HiveManager<T extends HiveObject> {
     return hiveInstance.hiveObject;
   }
 
-  Future<void> delete(HiveObjectReference<T> hiveInstance) async {
+  Future<void> delete(HiveObjectReference<E> hiveInstance) async {
     assert(hiveInstance != null);
 
     _checkInstanceOnNull(hiveInstance);
@@ -169,10 +169,10 @@ class HiveManager<T extends HiveObject> {
   HiveManager._internal();
 
   factory HiveManager() {
-    if (_managerCache.containsKey(T)) {
-      return _managerCache[T];
+    if (_managerCache.containsKey(E)) {
+      return _managerCache[E];
     }
 
-    return _managerCache.putIfAbsent(T, () => HiveManager<T>._internal());
+    return _managerCache.putIfAbsent(E, () => HiveManager<E>._internal());
   }
 }
