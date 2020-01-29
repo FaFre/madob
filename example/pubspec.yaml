@@ -8,7 +8,6 @@ environment:
 
 dependencies:
   hive_managed:
-    version: any
     path: ".."
 
 dev_dependencies:
