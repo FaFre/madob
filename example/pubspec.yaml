@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   hive_managed:
-    path: "..\\"
+    path: ".."
 
 dev_dependencies:
   pedantic: ^1.8.0
