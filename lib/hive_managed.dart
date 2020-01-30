@@ -1,7 +1,6 @@
-library hive_managed;
-
 import 'src/hive_repository.dart';
 
+export 'package:hive_managed/src/hive_managed_error.dart';
 export 'package:hive_managed/src/entities/key.dart';
 export 'package:hive_managed/src/entities/hive_managed.dart';
 

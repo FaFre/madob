@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:hive/hive.dart';
 
-import '../../hive_managed_error.dart';
+import '../../src/hive_managed_error.dart';
 import '../hive_manager.dart';
 import 'hive_object_reference.dart';
 

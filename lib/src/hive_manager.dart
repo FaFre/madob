@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
 
 import '../hive_managed.dart';
-import '../hive_managed_error.dart';
+import '../src/hive_managed_error.dart';
 import 'entities/hive_object_reference.dart';
 import 'entities/key.dart';
 import 'hive_repository.dart';
