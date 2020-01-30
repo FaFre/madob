@@ -18,8 +18,7 @@ void main() {
         final managedTask = ManagedTask()
           ..hiveManagerInterface = MockGiveManagerTask();
 
-        expect(() => managedTask.getId(),
-            throwsHiveManagedError('No hive instance'));
+        expect(managedTask.getId, throwsHiveManagedError('No hive instance'));
       });
 
       test('.getId() should call interface', () async {

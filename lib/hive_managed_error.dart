@@ -1,8 +1,11 @@
+/// HiveManaged related errors
 class HiveManagedError extends Error {
-  final message;
+  /// Contains a description of the error
+  final String message;
 
+  /// Initialize error with a message
   HiveManagedError(this.message);
 
   @override
-  String toString() => 'Hive Manged: $message';
+  String toString() => 'HiveManaged: $message';
 }

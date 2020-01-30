@@ -1,55 +1,64 @@
-import 'package:hive_managed/src/hive_manager.dart';
 import 'package:meta/meta.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_managed/hive_managed.dart';
-import 'package:hive_managed/hive_managed_error.dart';
-import 'package:hive_managed/src/entities/hive_object_reference.dart';
 
+import '../../hive_managed_error.dart';
+import '../hive_manager.dart';
+import 'hive_object_reference.dart';
+
+/// Inherit from [HiveManaged] to create a managed object.
 class HiveManaged<E extends HiveObject> implements HiveObjectReference<E> {
-  /// [hiveObject] is fully managed by [HiveManager]
+  /// [hiveObject] is fully managed by [HiveManager].
   ///
-  /// **Warning:** [hiveObject] should only be touched by those who know what they are doing
+  /// **Warning:** [hiveObject] should only be touched by those
+  /// who know what they are doing.
   @override
   E hiveObject;
 
+  /// **Warning:** [hiveManagerInterface] is only changed for
+  /// **unit-test purposes** to allow mocking.
   @visibleForTesting
   HiveManager<E> hiveManagerInterface = HiveManager<E>();
 
+  /// Gets the reference of the underlying [HiveManager].
   HiveManager<E> get hive => hiveManagerInterface;
 
   void _throwIfUninitialized() {
     if (hiveObject == null) {
       throw HiveManagedError(
-          'No hive instance of $E assigned to execute opertation on');
+          'No hive instance of $E assigned to execute operation on');
     }
   }
 
   /// Returns the Id of the managed object.
   ///
   /// The returned [dynamic] is used also used as a **hive-key**.
-  /// For Hive <= 1.3.0 the key must be either of type [int] or [String]. This may change with future versions.
+  /// For Hive <= 1.3.0 the key must be either of type [int] or [String].
+  /// This may change with future versions.
   dynamic getId() {
     _throwIfUninitialized();
     return hive.getId(hiveObject);
   }
 
-  /// Returns the associated box for [E]
+  /// Returns the associated box for [E].
   Future<Box<E>> getBox() async => hive.getBox();
 
-  /// Ensures that [hiveObject] does have an active database relation and is synchronized.
+  /// Ensures that [hiveObject] does have an active
+  /// database relation and is synchronized.
   /// **Changes the reference of [hiveObject] if needed**
   ///
-  /// It either gets [hiveObject] from the database (based on matching [getId()]) or
+  /// It either gets [hiveObject] from the
+  /// database (based on matching [getId()]) or
   /// creates a new object with corresponding [getId()] in the database.
   Future<void> ensure() async => hive.ensure(this);
 
   /// Ensures [hiveObject] and returns the result from passed [getValue].
   ///
-  /// If [uninsuredGet] is set to `true` for e.g. performance reasons, the result
-  /// of [getValue] **may not represent** the current value in the database
+  /// If [uninsuredGet] is set to `true` for
+  /// e.g. performance reasons, the result
+  /// of [getValue()] **may not represent** the current value in the database.
   @protected
   Future<R> getValue<R>(Future<R> Function(E) getValue,
-      {uninsuredGet = false}) {
+      {bool uninsuredGet = false}) {
     _throwIfUninitialized();
     return hive.getValue(this, getValue, uninsuredGet: uninsuredGet);
   }
@@ -61,7 +70,8 @@ class HiveManaged<E extends HiveObject> implements HiveObjectReference<E> {
     return hive.setValue(this, writeValue);
   }
 
-  /// Ensures [hiveObject] + [reference] and sets the reference via [writeValue].
+  /// Ensures [hiveObject] + [reference] and sets
+  /// the reference via [writeValue].
   @protected
   Future<R> setReference<R extends HiveObject>(
       R reference, Future<void> Function(E, R) setReference) async {
@@ -79,7 +89,8 @@ class HiveManaged<E extends HiveObject> implements HiveObjectReference<E> {
     return hive.getOrUpdateReference(this, getReference, setReference);
   }
 
-  /// [initialize()] is mandatory and has to be called before any other operation.
+  /// [initialize()] is mandatory and has to be
+  /// called before any other operation.
   Future<E> initialize(E Function() newInstance) {
     return hive.initialize(this, newInstance);
   }

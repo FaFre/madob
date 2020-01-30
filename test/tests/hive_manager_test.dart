@@ -25,14 +25,14 @@ class MockManagedTask extends Mock implements HiveManaged<MockTask>, ITask {}
 
 @immutable
 class TestData {
-  final tBoxName = 'testBox';
-  final tId = '1';
-  final tTask = MockTask();
-  final tReturnedTask = MockTask();
-  final tReturnedTaskTitle = 'Returned Title';
-  final tTaskInstance = MockManagedTask();
+  final String tBoxName = 'testBox';
+  final String tId = '1';
+  final MockTask tTask = MockTask();
+  final MockTask tReturnedTask = MockTask();
+  final String tReturnedTaskTitle = 'Returned Title';
+  final MockManagedTask tTaskInstance = MockManagedTask();
 
-  final tBox = MockBox<MockTask>();
+  final MockBox<MockTask> tBox = MockBox<MockTask>();
 }
 
 class EnsuredTest {
@@ -58,7 +58,7 @@ class EnsuredTest {
     when(testData.tBox.get(testData.tId)).thenReturn(testData.tReturnedTask);
   }
 
-  Future<void> run(Future Function() func, {doVerification = true}) async {
+  Future<void> run(Future Function() func, {bool doVerification = true}) async {
     await func();
 
     if (doVerification) {

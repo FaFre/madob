@@ -5,7 +5,7 @@ Matcher throwsHiveManagedError([String contains]) {
   return throwsA(
     allOf(
       isA<HiveManagedError>(),
-      predicate((HiveManagedError e) =>
+      predicate((e) =>
           contains == null ||
           e.toString().toLowerCase().contains(contains.toLowerCase())),
     ),

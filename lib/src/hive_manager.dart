@@ -1,17 +1,23 @@
 import 'package:hive/hive.dart';
-import 'package:hive_managed/hive_managed.dart';
-import 'package:hive_managed/hive_managed_error.dart';
-import 'package:hive_managed/src/entities/hive_object_reference.dart';
-import 'package:hive_managed/src/entities/key.dart';
-import 'package:hive_managed/src/hive_repository.dart';
 import 'package:meta/meta.dart';
 
+import '../hive_managed.dart';
+import '../hive_managed_error.dart';
+import 'entities/hive_object_reference.dart';
+import 'entities/key.dart';
+import 'hive_repository.dart';
+
+/// Internal implementation used by [HiveManaged]
 class HiveManager<E extends HiveObject> {
   static final Map<Type, HiveManager> _managerCache = {};
 
+  /// **Warning:** [hiveInterface] is only changed for
+  /// **unit-test purposes** to allow mocking.
   @visibleForTesting
   static HiveInterface hiveInterface = Hive;
 
+  /// **Warning:** [hiveRepository] is only changed for
+  /// **unit-test purposes** to allow mocking.
   @visibleForTesting
   static HiveRepository hiveRepository = HiveManagedRepository;
 
@@ -26,12 +32,14 @@ class HiveManager<E extends HiveObject> {
     final id = getId(instance);
     if (id == null) {
       throw HiveManagedError(
-          'Instance of $E is not in a box. Id of the object is null. Valid Id is required for all operations');
+          'Instance of $E is not in a box. Id of the object is null.'
+          'Valid Id is required for all operations');
     }
 
     return id;
   }
 
+  /// See [HiveManaged.getId()]
   dynamic getId(E instance) {
     assert(instance != null);
 
@@ -43,6 +51,7 @@ class HiveManager<E extends HiveObject> {
     return (instance as IKey).managedKey;
   }
 
+  /// See [HiveManaged.getBox()]
   Future<Box<E>> getBox() async {
     return hiveInterface.openBox(hiveRepository.getBoxName<E>());
   }
@@ -52,6 +61,7 @@ class HiveManager<E extends HiveObject> {
 
   Future<E> _get(dynamic key) async => (await getBox()).get(key);
 
+  /// See [HiveManaged.ensure()]
   Future<void> ensure(HiveObjectReference<E> instance) async {
     assert(instance != null);
 
@@ -60,6 +70,7 @@ class HiveManager<E extends HiveObject> {
     instance.hiveObject = await ensureObject(instance.hiveObject);
   }
 
+  /// See [HiveManaged.ensureObject()]
   Future<E> ensureObject(E instance) async {
     assert(instance != null);
 
@@ -77,9 +88,10 @@ class HiveManager<E extends HiveObject> {
     return instance;
   }
 
+  /// See [HiveManaged.getValue()]
   Future<R> getValue<R>(
       HiveObjectReference<E> hiveInstance, Future<R> Function(E) getValue,
-      {uninsuredGet = false}) async {
+      {bool uninsuredGet = false}) async {
     assert(hiveInstance != null);
     assert(getValue != null);
 
@@ -89,6 +101,7 @@ class HiveManager<E extends HiveObject> {
     return getValue(hiveInstance.hiveObject);
   }
 
+  /// See [HiveManaged.setValue()]
   Future<void> setValue(HiveObjectReference<E> hiveInstance,
       Future<void> Function(E) writeValue) async {
     assert(hiveInstance != null);
@@ -102,6 +115,7 @@ class HiveManager<E extends HiveObject> {
     return hiveInstance.hiveObject.save();
   }
 
+  /// See [HiveManaged.setReference()]
   Future<R> setReference<R extends HiveObject>(
       HiveObjectReference<E> hiveInstance,
       R reference,
@@ -122,6 +136,7 @@ class HiveManager<E extends HiveObject> {
     return ensuredReference;
   }
 
+  /// See [HiveManaged.getOrUpdateReference()]
   Future<R> getOrUpdateReference<R extends HiveObject>(
       HiveObjectReference<E> hiveInstance,
       Future<R> Function(E) getReference,
@@ -134,6 +149,7 @@ class HiveManager<E extends HiveObject> {
         await getReference(hiveInstance.hiveObject), setReference);
   }
 
+  /// See [HiveManaged.initialize()]
   Future<E> initialize(
       HiveObjectReference<E> hiveInstance, E Function() newInstance) async {
     assert(newInstance != null);
@@ -145,6 +161,7 @@ class HiveManager<E extends HiveObject> {
     return hiveInstance.hiveObject;
   }
 
+  /// See [HiveManaged.delete()]
   Future<void> delete(HiveObjectReference<E> hiveInstance) async {
     assert(hiveInstance != null);
 
@@ -168,6 +185,7 @@ class HiveManager<E extends HiveObject> {
 
   HiveManager._internal();
 
+  /// Factory constructor for [E]
   factory HiveManager() {
     if (_managerCache.containsKey(E)) {
       return _managerCache[E];

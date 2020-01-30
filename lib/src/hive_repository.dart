@@ -1,11 +1,17 @@
 import 'package:meta/meta.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_managed/hive_managed_error.dart';
 
+import '../hive_managed_error.dart';
+
+/// Handles [HiveObject]'s to [Box]-name relations
 class HiveRepository {
   bool _isInitialized = false;
+
+  /// Initialization status of [HiveRepository]
   bool get isInitialized => _isInitialized;
 
+  /// **Warning:** [hiveInterface] is only changed for
+  /// **unit-test purposes** to allow mocking.
   @visibleForTesting
   HiveInterface hiveInterface = Hive;
 
@@ -23,6 +29,9 @@ class HiveRepository {
     }
   }
 
+  /// Initializes [HiveRepository] with a given [path] which is used
+  /// as a [Hive] database path.
+  /// Also see [Hive.init()]
   void init(String path) {
     assert(path != null && path.isNotEmpty);
 
@@ -36,6 +45,8 @@ class HiveRepository {
     }
   }
 
+  /// Register a [HiveObject] to [Box]-name relation, as well as
+  /// the required [TypeAdapter] for [Hive]
   void register<K extends HiveObject>(String boxName, TypeAdapter<K> adapter) {
     assert(boxName != null && boxName.isNotEmpty);
     assert(adapter != null);
@@ -54,6 +65,7 @@ class HiveRepository {
     _boxCache.putIfAbsent(K, () => boxName);
   }
 
+  /// Returns the related [Box]-name for [K]
   String getBoxName<K extends HiveObject>() {
     _throwIfNotInitialized();
     _throwIfNotRegistered<K>();
@@ -61,6 +73,7 @@ class HiveRepository {
     return _boxCache[K];
   }
 
+  /// Explicitly closes the [Box] for [K]
   Future<void> closeBox<K extends HiveObject>() async {
     _throwIfNotInitialized();
     _throwIfNotRegistered<K>();

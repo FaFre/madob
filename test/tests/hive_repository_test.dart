@@ -14,11 +14,11 @@ class MockBox extends Mock implements Box<Task> {}
 
 @immutable
 class TestData {
-  final taskBox = 'taskBox';
-  final taskAdapter = TaskAdapter();
+  final String taskBox = 'taskBox';
+  final TaskAdapter taskAdapter = TaskAdapter();
 
-  final projectBox = 'projectBox';
-  final projectAdapter = ProjectAdapter();
+  final String projectBox = 'projectBox';
+  final ProjectAdapter projectAdapter = ProjectAdapter();
 }
 
 void main() {
@@ -27,7 +27,7 @@ void main() {
   });
 
   group('HiveRepository', () {
-    test('.register() should throw because repsoitory uninitialized', () {
+    test('.register() should throw because repository uninitialized', () {
       final testData = TestData();
 
       expect(
