@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_managed/hive_managed_error.dart';
 
-class HiveRepositoryImplementation {
+class HiveRepository {
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
 

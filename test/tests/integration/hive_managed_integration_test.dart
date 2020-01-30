@@ -18,10 +18,10 @@ void main() {
 
   group('Integration', () {
     group('HiveRepository', () {
-      test('.init()', () => HiveRepository.init(path));
+      test('.init()', () => HiveManagedRepository.init(path));
       test('.register()', () {
-        HiveRepository.register('projectBox', ProjectAdapter());
-        HiveRepository.register('taskBox', TaskAdapter());
+        HiveManagedRepository.register('projectBox', ProjectAdapter());
+        HiveManagedRepository.register('taskBox', TaskAdapter());
       });
     });
 
@@ -67,7 +67,7 @@ void main() {
 
       group('HiveRepository', () {
         test('.closeBox()', () async {
-          await HiveRepository.closeBox<Task>();
+          await HiveManagedRepository.closeBox<Task>();
           expect(task.hiveObject.box.isOpen, isFalse);
         });
       });

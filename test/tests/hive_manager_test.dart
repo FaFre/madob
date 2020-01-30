@@ -13,7 +13,7 @@ import 'common.dart';
 
 class MockHive extends Mock implements HiveInterface {}
 
-class MockRepository extends Mock implements HiveRepositoryImplementation {}
+class MockRepository extends Mock implements HiveRepository {}
 
 class MockBox<T> extends Mock implements Box<T> {}
 

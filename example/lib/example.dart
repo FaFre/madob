@@ -9,9 +9,9 @@ import 'package:hive_managed_example/helper/path_provider.dart';
 void main() async {
   final directory = await PathProvider().getTempDirectory();
 
-  HiveRepository.init(directory.path);
-  HiveRepository.register('projectBox', ProjectAdapter());
-  HiveRepository.register('taskBox', TaskAdapter());
+  HiveManagedRepository.init(directory.path);
+  HiveManagedRepository.register('projectBox', ProjectAdapter());
+  HiveManagedRepository.register('taskBox', TaskAdapter());
 
   final taskid = StrongUuid().generate();
   final projectId = StrongUuid().generate();
@@ -27,8 +27,8 @@ void main() async {
       'Id of project after .setProject(): ${(await task.project).managedKey}');
 
   //Close both boxes
-  await HiveRepository.closeBox<Task>();
-  await HiveRepository.closeBox<Project>();
+  await HiveManagedRepository.closeBox<Task>();
+  await HiveManagedRepository.closeBox<Project>();
 
   //Set title through closed task
   await (await task.project).setTitle('Test Project');

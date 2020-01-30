@@ -13,7 +13,7 @@ class HiveManager<E extends HiveObject> {
   static HiveInterface hiveInterface = Hive;
 
   @visibleForTesting
-  static HiveRepositoryImplementation hiveRepository = HiveRepository;
+  static HiveRepository hiveRepository = HiveManagedRepository;
 
   void _checkInstanceOnNull(HiveObjectReference<E> instance) {
     if (instance.hiveObject == null) {

@@ -10,5 +10,4 @@ export 'package:hive_managed/src/helper/strong_uuid.dart';
 
 export 'package:hive_managed/src/hive_repository.dart';
 
-final HiveRepositoryImplementation HiveRepository =
-    HiveRepositoryImplementation();
+final HiveRepository HiveManagedRepository = HiveRepository();
