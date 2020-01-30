@@ -71,7 +71,7 @@ class HiveManaged<E extends HiveObject> implements HiveObjectReference<E> {
   }
 
   /// Ensures [hiveObject] + [reference] and sets
-  /// the reference via [writeValue].
+  /// the reference via [setReference].
   @protected
   Future<R> setReference<R extends HiveObject>(
       R reference, Future<void> Function(E, R) setReference) async {

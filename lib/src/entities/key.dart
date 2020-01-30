@@ -1,3 +1,5 @@
+import 'package:hive/hive.dart';
+
 import '../entities/hive_managed.dart';
 import '../helper/strong_uuid.dart';
 
