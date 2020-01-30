@@ -1,12 +1,12 @@
 import 'package:hive_managed/hive_managed.dart';
 import 'package:hive_managed/src/helper/strong_uuid.dart';
-import 'package:hive_managed/src/helper/path_provider.dart';
 import 'package:test/test.dart';
 
 import 'package:hive_managed_example/data/objects/data/entities/managed_project_model.dart';
 import 'package:hive_managed_example/data/objects/data/entities/managed_task_model.dart';
 import 'package:hive_managed_example/data/objects/data/entities/project_model.dart';
 import 'package:hive_managed_example/data/objects/data/entities/task_model.dart';
+import 'package:hive_managed_example/helper/path_provider.dart';
 
 void main() {
   String path;
