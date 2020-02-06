@@ -4,11 +4,9 @@ import 'package:test/test.dart';
 
 import 'package:hive_managed_example/data/objects/data/entities/managed_task_model.dart';
 import 'package:hive_managed_example/data/objects/data/entities/task_model.dart';
-import 'common.dart';
 
-class MockTask extends Mock implements Task {}
-
-class MockGiveManagerTask extends Mock implements HiveManager<Task> {}
+import '../helper/common.dart';
+import '../helper/mocking.dart';
 
 void main() {
   //Just a basic test of proxy functionality
@@ -16,14 +14,14 @@ void main() {
     group('proxy check', () {
       test('.getId() should throw because uninitialized', () async {
         final managedTask = ManagedTask()
-          ..hiveManagerInterface = MockGiveManagerTask();
+          ..hiveManagerInterface = MockHiveManagerTask();
 
         expect(managedTask.getId, throwsHiveManagedError('No hive instance'));
       });
 
       test('.getId() should call interface', () async {
         final managedTask = ManagedTask()
-          ..hiveManagerInterface = MockGiveManagerTask()
+          ..hiveManagerInterface = MockHiveManagerTask()
           ..hiveObject = Task('doesntmatter');
 
         managedTask.getId();

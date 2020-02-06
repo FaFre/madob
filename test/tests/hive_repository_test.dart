@@ -1,16 +1,13 @@
 import 'package:meta/meta.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_managed/hive_managed.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:hive_managed_example/data/objects/data/entities/project_model.dart';
 import 'package:hive_managed_example/data/objects/data/entities/task_model.dart';
-import 'common.dart';
 
-class MockHive extends Mock implements HiveInterface {}
-
-class MockBox extends Mock implements Box<Task> {}
+import '../helper/common.dart';
+import '../helper/mocking.dart';
 
 @immutable
 class TestData {
@@ -120,7 +117,7 @@ void main() {
       test('should close box', () async {
         final testData = TestData();
 
-        final box = MockBox();
+        final box = MockBox<Task>();
 
         when(HiveManagedRepository.hiveInterface.isBoxOpen(testData.taskBox))
             .thenReturn(true);

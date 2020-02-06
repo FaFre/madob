@@ -1,27 +1,14 @@
 import 'package:meta/meta.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_managed/src/entities/key.dart';
-import 'package:hive_managed/src/entities/hive_managed.dart';
 import 'package:hive_managed/src/hive_manager.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'package:hive_managed/src/hive_repository.dart';
 import 'package:hive_managed_example/data/objects/data/entities/task_model.dart';
-import 'package:hive_managed_example/data/objects/domain/entities/task.dart';
-import 'common.dart';
 
-class MockHive extends Mock implements HiveInterface {}
-
-class MockRepository extends Mock implements HiveRepository {}
-
-class MockBox<T> extends Mock implements Box<T> {}
-
-class MockHiveObject extends Mock implements HiveObject {}
-
-class MockTask extends Mock implements Task {}
-
-class MockManagedTask extends Mock implements HiveManaged<MockTask>, ITask {}
+import '../helper/common.dart';
+import '../helper/mocking.dart';
 
 @immutable
 class TestData {
@@ -73,7 +60,7 @@ class EnsuredTest {
 void main() {
   setUp(() {
     HiveManager.hiveInterface = MockHive();
-    HiveManager.hiveRepository = MockRepository();
+    HiveManager.hiveRepository = MockHiveRepository();
   });
 
   void noMoreInteractions() {
