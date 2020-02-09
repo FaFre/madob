@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
-import 'package:madob/hive_managed.dart';
+import 'package:madob/madob.dart';
 import 'package:madob/src/hive_manager.dart';
-import 'package:madob/src/hive_repository.dart';
+import 'package:madob/src/hive_box_repository.dart';
 import 'package:madob_example/data/objects/data/entities/task_model.dart';
 import 'package:madob_example/data/objects/domain/entities/task.dart';
 import 'package:mockito/mockito.dart';

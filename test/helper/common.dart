@@ -1,4 +1,4 @@
-import 'package:madob/hive_managed.dart';
+import 'package:madob/madob.dart';
 import 'package:test/test.dart';
 
 Matcher throwsMadobError([String contains]) {

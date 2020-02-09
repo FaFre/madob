@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:madob/hive_managed.dart';
+import 'package:madob/madob.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 

@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:hive/hive.dart';
 
-import '../src/hive_managed_error.dart';
+import '../src/madob_error.dart';
 
 /// Handles [HiveObject]'s to [Box]-name relations
 class HiveBoxRepository {

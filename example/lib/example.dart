@@ -1,4 +1,4 @@
-import 'package:madob/hive_managed.dart';
+import 'package:madob/madob.dart';
 
 import 'package:madob_example/data/objects/data/entities/managed_task_model.dart';
 import 'package:madob_example/data/objects/data/entities/task_model.dart';

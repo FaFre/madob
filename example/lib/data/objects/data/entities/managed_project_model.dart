@@ -1,4 +1,4 @@
-import 'package:madob/hive_managed.dart';
+import 'package:madob/madob.dart';
 
 import '../../domain/entities/project.dart';
 import 'project_model.dart';

@@ -1,5 +1,5 @@
-import 'package:madob/hive_managed.dart';
-import 'package:madob/src/entities/hive_managed.dart';
+import 'package:madob/madob.dart';
+import 'package:madob/src/entities/madob.dart';
 import 'package:hive/hive.dart';
 import 'package:madob/src/helper/strong_uuid.dart';
 

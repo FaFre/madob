@@ -1,4 +1,4 @@
-import 'package:madob/hive_managed.dart';
+import 'package:madob/madob.dart';
 import 'package:madob/src/helper/strong_uuid.dart';
 import 'package:test/test.dart';
 

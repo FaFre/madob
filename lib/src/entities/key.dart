@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-import '../entities/hive_managed.dart';
+import '../entities/madob.dart';
 import '../helper/strong_uuid.dart';
 
 /// Implement [IKey] and inherit from [HiveObject]

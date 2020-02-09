@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 
 import '../hive_manager.dart';
-import 'hive_managed.dart';
+import 'madob.dart';
 
 /// Is implemented by [Madob] to expose [E] to [HiveManager].
 abstract class HiveObjectReference<E extends HiveObject> {
