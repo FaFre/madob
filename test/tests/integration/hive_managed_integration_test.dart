@@ -1,12 +1,12 @@
-import 'package:hive_managed/hive_managed.dart';
-import 'package:hive_managed/src/helper/strong_uuid.dart';
+import 'package:madob/hive_managed.dart';
+import 'package:madob/src/helper/strong_uuid.dart';
 import 'package:test/test.dart';
 
-import 'package:hive_managed_example/data/objects/data/entities/managed_project_model.dart';
-import 'package:hive_managed_example/data/objects/data/entities/managed_task_model.dart';
-import 'package:hive_managed_example/data/objects/data/entities/project_model.dart';
-import 'package:hive_managed_example/data/objects/data/entities/task_model.dart';
-import 'package:hive_managed_example/helper/path_provider.dart';
+import 'package:madob_example/data/objects/data/entities/managed_project_model.dart';
+import 'package:madob_example/data/objects/data/entities/managed_task_model.dart';
+import 'package:madob_example/data/objects/data/entities/project_model.dart';
+import 'package:madob_example/data/objects/data/entities/task_model.dart';
+import 'package:madob_example/helper/path_provider.dart';
 
 void main() {
   String path;
@@ -17,15 +17,15 @@ void main() {
   });
 
   group('Integration', () {
-    group('HiveRepository', () {
-      test('.init()', () => HiveManagedRepository.init(path));
+    group('BoxRepository', () {
+      test('.init()', () => BoxRepository.init(path));
       test('.register()', () {
-        HiveManagedRepository.register('projectBox', ProjectAdapter());
-        HiveManagedRepository.register('taskBox', TaskAdapter());
+        BoxRepository.register('projectBox', ProjectAdapter());
+        BoxRepository.register('taskBox', TaskAdapter());
       });
     });
 
-    group('HiveManaged', () {
+    group('Madob', () {
       final taskId = StrongUuid().generate();
       final taskTitle = 'Test Task Title';
 
@@ -65,9 +65,9 @@ void main() {
         });
       });
 
-      group('HiveRepository', () {
+      group('BoxRepository', () {
         test('.closeBox()', () async {
-          await HiveManagedRepository.closeBox<Task>();
+          await BoxRepository.closeBox<Task>();
           expect(task.hiveObject.box.isOpen, isFalse);
         });
       });

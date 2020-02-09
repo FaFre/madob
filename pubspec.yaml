@@ -1,7 +1,7 @@
-name: hive_managed
-description: HiveManaged is a super simple and easy to use highly-asynchronous library for database-synchronized objects. It is built upon hive, the blazing-fast key-value database.
+name: madob
+description: Madob is a super simple and easy to use highly-asynchronous library for database-synchronized objects. It is built upon hive, the blazing-fast key-value database.
 version: 0.1.0
-homepage: https://github.com/FaFre/hive_managed
+homepage: https://github.com/FaFre/madob
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -18,5 +18,5 @@ dev_dependencies:
   hive_generator: ^0.7.0
   build_runner: ^1.7.2
   effective_dart: ^1.2.1
-  hive_managed_example:
+  madob_example:
     path: example

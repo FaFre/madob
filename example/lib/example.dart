@@ -1,17 +1,17 @@
-import 'package:hive_managed/hive_managed.dart';
+import 'package:madob/hive_managed.dart';
 
-import 'package:hive_managed_example/data/objects/data/entities/managed_task_model.dart';
-import 'package:hive_managed_example/data/objects/data/entities/task_model.dart';
-import 'package:hive_managed_example/data/objects/data/entities/project_model.dart';
-import 'package:hive_managed_example/data/objects/data/entities/managed_project_model.dart';
-import 'package:hive_managed_example/helper/path_provider.dart';
+import 'package:madob_example/data/objects/data/entities/managed_task_model.dart';
+import 'package:madob_example/data/objects/data/entities/task_model.dart';
+import 'package:madob_example/data/objects/data/entities/project_model.dart';
+import 'package:madob_example/data/objects/data/entities/managed_project_model.dart';
+import 'package:madob_example/helper/path_provider.dart';
 
 void main() async {
   final directory = await PathProvider().getTempDirectory();
 
-  HiveManagedRepository.init(directory.path);
-  HiveManagedRepository.register('projectBox', ProjectAdapter());
-  HiveManagedRepository.register('taskBox', TaskAdapter());
+  BoxRepository.init(directory.path);
+  BoxRepository.register('projectBox', ProjectAdapter());
+  BoxRepository.register('taskBox', TaskAdapter());
 
   final taskid = StrongUuid().generate();
   final projectId = StrongUuid().generate();
@@ -27,8 +27,8 @@ void main() async {
       'Id of project after .setProject(): ${(await task.project).managedKey}');
 
   //Close both boxes
-  await HiveManagedRepository.closeBox<Task>();
-  await HiveManagedRepository.closeBox<Project>();
+  await BoxRepository.closeBox<Task>();
+  await BoxRepository.closeBox<Project>();
 
   //Set title through closed task
   await (await task.project).setTitle('Test Project');

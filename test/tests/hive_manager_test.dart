@@ -1,11 +1,11 @@
 import 'package:meta/meta.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_managed/src/entities/key.dart';
-import 'package:hive_managed/src/hive_manager.dart';
+import 'package:madob/src/entities/key.dart';
+import 'package:madob/src/hive_manager.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'package:hive_managed_example/data/objects/data/entities/task_model.dart';
+import 'package:madob_example/data/objects/data/entities/task_model.dart';
 
 import '../helper/common.dart';
 import '../helper/mocking.dart';
@@ -26,7 +26,7 @@ class EnsuredTest {
   final TestData testData;
 
   EnsuredTest() : testData = TestData() {
-    when(HiveManager.hiveRepository.getBoxName<MockTask>())
+    when(HiveManager.boxRepository.getBoxName<MockTask>())
         .thenReturn(testData.tBoxName);
     when(HiveManager.hiveInterface.openBox(testData.tBoxName))
         .thenAnswer((_) => Future<MockBox<MockTask>>.value(testData.tBox));
@@ -49,7 +49,7 @@ class EnsuredTest {
     await func();
 
     if (doVerification) {
-      verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+      verify(HiveManager.boxRepository.getBoxName<MockTask>());
       verify(HiveManager.hiveInterface.openBox(testData.tBoxName));
       verify(testData.tTask.managedKey);
       verify(testData.tBox.get(any));
@@ -60,30 +60,30 @@ class EnsuredTest {
 void main() {
   setUp(() {
     HiveManager.hiveInterface = MockHive();
-    HiveManager.hiveRepository = MockHiveRepository();
+    HiveManager.boxRepository = MockBoxRepository();
   });
 
   void noMoreInteractions() {
     verifyNoMoreInteractions(HiveManager.hiveInterface);
-    verifyNoMoreInteractions(HiveManager.hiveRepository);
+    verifyNoMoreInteractions(HiveManager.boxRepository);
   }
 
   void zeroInteractions() {
     verifyZeroInteractions(HiveManager.hiveInterface);
-    verifyZeroInteractions(HiveManager.hiveRepository);
+    verifyZeroInteractions(HiveManager.boxRepository);
   }
 
   Future<Box<T>> openBox<T extends HiveObject>(
       Future<Box<T>> Function() func) async {
     final tBox = 'testBox';
 
-    when(HiveManager.hiveRepository.getBoxName<Task>()).thenReturn(tBox);
+    when(HiveManager.boxRepository.getBoxName<Task>()).thenReturn(tBox);
     when(HiveManager.hiveInterface.openBox(tBox))
         .thenAnswer((_) => Future<MockBox<Task>>.value(MockBox<Task>()));
 
     final box = func();
 
-    verify(HiveManager.hiveRepository.getBoxName<Task>());
+    verify(HiveManager.boxRepository.getBoxName<Task>());
     verify(HiveManager.hiveInterface.openBox(tBox));
 
     noMoreInteractions();
@@ -116,7 +116,7 @@ void main() {
         final wrongObject = MockHiveObject();
 
         expect(() => HiveManager<MockHiveObject>().getId(wrongObject),
-            throwsHiveManagedError('not implement $IKey'));
+            throwsMadobError('not implement $IKey'));
 
         zeroInteractions();
       });
@@ -157,7 +157,7 @@ void main() {
       test('should return via put', () async {
         final testData = TestData();
 
-        when(HiveManager.hiveRepository.getBoxName<MockTask>())
+        when(HiveManager.boxRepository.getBoxName<MockTask>())
             .thenReturn(testData.tBoxName);
         when(HiveManager.hiveInterface.openBox(testData.tBoxName))
             .thenAnswer((_) => Future<MockBox<MockTask>>.value(testData.tBox));
@@ -170,7 +170,7 @@ void main() {
         final returnedTask =
             await HiveManager<MockTask>().ensureObject(testData.tTask);
 
-        verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+        verify(HiveManager.boxRepository.getBoxName<MockTask>());
         verify(HiveManager.hiveInterface.openBox(testData.tBoxName));
         verify(testData.tTask.managedKey);
         verify(testData.tBox.get(testData.tId));
@@ -184,7 +184,7 @@ void main() {
       test('should return via get (box closed)', () async {
         final testData = TestData();
 
-        when(HiveManager.hiveRepository.getBoxName<MockTask>())
+        when(HiveManager.boxRepository.getBoxName<MockTask>())
             .thenReturn(testData.tBoxName);
         when(HiveManager.hiveInterface.openBox(testData.tBoxName))
             .thenAnswer((_) => Future<MockBox<MockTask>>.value(testData.tBox));
@@ -206,7 +206,7 @@ void main() {
         final returnedTask =
             await HiveManager<MockTask>().ensureObject(testData.tTask);
 
-        verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+        verify(HiveManager.boxRepository.getBoxName<MockTask>());
         verify(HiveManager.hiveInterface.openBox(testData.tBoxName));
         verify(testData.tTask.managedKey);
         verify(testData.tBox.get(any));
@@ -225,7 +225,7 @@ void main() {
         zeroInteractions();
 
         expect(() => HiveManager<MockTask>().ensureObject(testData.tTask),
-            throwsHiveManagedError('null'));
+            throwsMadobError('null'));
       });
     });
 
@@ -236,7 +236,7 @@ void main() {
         zeroInteractions();
 
         expect(() => HiveManager<Task>().ensure(testData.tTaskInstance),
-            throwsHiveManagedError('null'));
+            throwsMadobError('null'));
       });
 
       test('should modify returned obj from ensureAndModify', () async {
@@ -304,7 +304,7 @@ void main() {
             HiveManager<MockTask>().getValue<int>(instance, (_) async {
               return null;
             }),
-            throwsHiveManagedError('null'));
+            throwsMadobError('null'));
 
         zeroInteractions();
       });
@@ -339,7 +339,7 @@ void main() {
             HiveManager<MockTask>().setValue(testData.tTaskInstance, (_) async {
               return null;
             }),
-            throwsHiveManagedError('null'));
+            throwsMadobError('null'));
 
         zeroInteractions();
       });
@@ -354,7 +354,7 @@ void main() {
                 (i, v) async {
               return null;
             }),
-            throwsHiveManagedError('null'));
+            throwsMadobError('null'));
 
         zeroInteractions();
       });
@@ -396,7 +396,7 @@ void main() {
           });
         }, doVerification: false);
 
-        verify(HiveManager.hiveRepository.getBoxName<MockTask>()).called(2);
+        verify(HiveManager.boxRepository.getBoxName<MockTask>()).called(2);
         verify(HiveManager.hiveInterface.openBox(ensuredTest.testData.tBoxName))
             .called(2);
         verify(ensuredTest.testData.tTask.managedKey).called(2);
@@ -424,7 +424,7 @@ void main() {
                 testData.tTaskInstance, (_) async => null, (i, v) async {
               return null;
             }),
-            throwsHiveManagedError('null'));
+            throwsMadobError('null'));
       });
 
       test('should update reference', () async {
@@ -451,7 +451,7 @@ void main() {
           });
         }, doVerification: false);
 
-        verify(HiveManager.hiveRepository.getBoxName<MockTask>()).called(2);
+        verify(HiveManager.boxRepository.getBoxName<MockTask>()).called(2);
         verify(HiveManager.hiveInterface.openBox(ensuredTest.testData.tBoxName))
             .called(2);
         verify(ensuredTest.testData.tTask.managedKey).called(2);
@@ -512,7 +512,7 @@ void main() {
         await expectLater(
             HiveManager<MockTask>()
                 .initialize(testData.tTaskInstance, createInstance),
-            throwsHiveManagedError('null'));
+            throwsMadobError('null'));
 
         verify(testData.tTaskInstance.hiveObject = null);
 
@@ -530,7 +530,7 @@ void main() {
 
         await expectLater(
             HiveManager<MockTask>().delete(testData.tTaskInstance),
-            throwsHiveManagedError('null'));
+            throwsMadobError('null'));
 
         zeroInteractions();
       });
@@ -538,7 +538,7 @@ void main() {
       test('should throw because id is not in box', () async {
         final testData = TestData();
 
-        when(HiveManager.hiveRepository.getBoxName<MockTask>())
+        when(HiveManager.boxRepository.getBoxName<MockTask>())
             .thenReturn(testData.tBoxName);
         when(HiveManager.hiveInterface.openBox(testData.tBoxName))
             .thenAnswer((_) => Future<MockBox<MockTask>>.value(testData.tBox));
@@ -551,9 +551,9 @@ void main() {
 
         await expectLater(
             HiveManager<MockTask>().delete(testData.tTaskInstance),
-            throwsHiveManagedError('Cannot delete'));
+            throwsMadobError('Cannot delete'));
 
-        verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+        verify(HiveManager.boxRepository.getBoxName<MockTask>());
         verify(HiveManager.hiveInterface.openBox(testData.tBoxName));
         verify(testData.tTask.managedKey);
 
@@ -563,7 +563,7 @@ void main() {
       test('should delete task is not in box yet', () async {
         final testData = TestData();
 
-        when(HiveManager.hiveRepository.getBoxName<MockTask>())
+        when(HiveManager.boxRepository.getBoxName<MockTask>())
             .thenReturn(testData.tBoxName);
         when(HiveManager.hiveInterface.openBox(testData.tBoxName))
             .thenAnswer((_) => Future<MockBox<MockTask>>.value(testData.tBox));
@@ -577,7 +577,7 @@ void main() {
 
         await HiveManager<MockTask>().delete(testData.tTaskInstance);
 
-        verify(HiveManager.hiveRepository.getBoxName<MockTask>());
+        verify(HiveManager.boxRepository.getBoxName<MockTask>());
         verify(HiveManager.hiveInterface.openBox(testData.tBoxName));
         verify(testData.tTask.managedKey);
         verify(testData.tBox.get(testData.tId));

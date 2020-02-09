@@ -4,10 +4,10 @@ import 'package:hive/hive.dart';
 import '../src/hive_managed_error.dart';
 
 /// Handles [HiveObject]'s to [Box]-name relations
-class HiveRepository {
+class HiveBoxRepository {
   bool _isInitialized = false;
 
-  /// Initialization status of [HiveRepository]
+  /// Initialization status of [HiveBoxRepository]
   bool get isInitialized => _isInitialized;
 
   /// **Warning:** [hiveInterface] is only changed for
@@ -19,24 +19,24 @@ class HiveRepository {
 
   void _throwIfNotInitialized() {
     if (!isInitialized) {
-      throw HiveManagedError('Repository is not initialized');
+      throw MadobError('Repository is not initialized');
     }
   }
 
   void _throwIfNotRegistered<T>() {
     if (!_boxCache.containsKey(T)) {
-      throw HiveManagedError('Unknown $T has not been registered');
+      throw MadobError('Unknown $T has not been registered');
     }
   }
 
-  /// Initializes [HiveRepository] with a given [path] which is used
+  /// Initializes [HiveBoxRepository] with a given [path] which is used
   /// as a [Hive] database path.
   /// Also see [Hive.init()]
   void init(String path) {
     assert(path != null && path.isNotEmpty);
 
     if (isInitialized) {
-      throw HiveManagedError('Repository is already initialized');
+      throw MadobError('Repository is already initialized');
     }
 
     if (!isInitialized) {
@@ -54,11 +54,11 @@ class HiveRepository {
     _throwIfNotInitialized();
 
     if (_boxCache.containsKey(K)) {
-      throw HiveManagedError('Type $K is already registered');
+      throw MadobError('Type $K is already registered');
     }
 
     if (_boxCache.containsValue(boxName)) {
-      throw HiveManagedError('Box $boxName is already registered');
+      throw MadobError('Box $boxName is already registered');
     }
 
     hiveInterface.registerAdapter(adapter);

@@ -1,10 +1,10 @@
-import 'package:hive_managed/hive_managed.dart';
+import 'package:madob/hive_managed.dart';
 import 'package:test/test.dart';
 
-Matcher throwsHiveManagedError([String contains]) {
+Matcher throwsMadobError([String contains]) {
   return throwsA(
     allOf(
-      isA<HiveManagedError>(),
+      isA<MadobError>(),
       predicate((e) =>
           contains == null ||
           e.toString().toLowerCase().contains(contains.toLowerCase())),

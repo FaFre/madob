@@ -5,8 +5,8 @@ import '../../src/hive_managed_error.dart';
 import '../hive_manager.dart';
 import 'hive_object_reference.dart';
 
-/// Inherit from [HiveManaged] to create a managed object.
-class HiveManaged<E extends HiveObject> implements HiveObjectReference<E> {
+/// Inherit from [Madob] to create a managed object.
+class Madob<E extends HiveObject> implements HiveObjectReference<E> {
   /// [hiveObject] is fully managed by [HiveManager].
   ///
   /// **Warning:** [hiveObject] should only be touched by those
@@ -24,7 +24,7 @@ class HiveManaged<E extends HiveObject> implements HiveObjectReference<E> {
 
   void _throwIfUninitialized() {
     if (hiveObject == null) {
-      throw HiveManagedError(
+      throw MadobError(
           'No hive instance of $E assigned to execute operation on');
     }
   }

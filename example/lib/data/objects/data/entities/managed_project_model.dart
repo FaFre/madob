@@ -1,9 +1,9 @@
-import 'package:hive_managed/hive_managed.dart';
+import 'package:madob/hive_managed.dart';
 
 import '../../domain/entities/project.dart';
 import 'project_model.dart';
 
-class ManagedProject extends HiveManaged<Project> implements IProject {
+class ManagedProject extends Madob<Project> implements IProject {
   @override
   String get managedKey => hiveObject.managedKey;
 

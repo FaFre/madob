@@ -1,4 +1,4 @@
-# HiveManaged changelog
+# Madob changelog
 
 ## 0.1.0
 

@@ -1,11 +1,11 @@
-/// HiveManaged related errors
-class HiveManagedError extends Error {
+/// Madob related errors
+class MadobError extends Error {
   /// Contains a description of the error
   final String message;
 
   /// Initialize error with a message
-  HiveManagedError(this.message);
+  MadobError(this.message);
 
   @override
-  String toString() => 'HiveManaged: $message';
+  String toString() => 'Madob: $message';
 }

@@ -7,7 +7,7 @@ import 'entities/hive_object_reference.dart';
 import 'entities/key.dart';
 import 'hive_repository.dart';
 
-/// Internal implementation used by [HiveManaged]
+/// Internal implementation used by [Madob]
 class HiveManager<E extends HiveObject> {
   static final Map<Type, HiveManager> _managerCache = {};
 
@@ -16,14 +16,14 @@ class HiveManager<E extends HiveObject> {
   @visibleForTesting
   static HiveInterface hiveInterface = Hive;
 
-  /// **Warning:** [hiveRepository] is only changed for
+  /// **Warning:** [boxRepository] is only changed for
   /// **unit-test purposes** to allow mocking.
   @visibleForTesting
-  static HiveRepository hiveRepository = HiveManagedRepository;
+  static HiveBoxRepository boxRepository = BoxRepository;
 
   void _checkInstanceOnNull(HiveObjectReference<E> instance) {
     if (instance.hiveObject == null) {
-      throw HiveManagedError(
+      throw MadobError(
           'Cannot work with empty/null instance of $E in $HiveObjectReference');
     }
   }
@@ -31,7 +31,7 @@ class HiveManager<E extends HiveObject> {
   dynamic _getValidIdOrThrow(E instance) {
     final id = getId(instance);
     if (id == null) {
-      throw HiveManagedError(
+      throw MadobError(
           'Instance of $E is not in a box. Id of the object is null.'
           'Valid Id is required for all operations');
     }
@@ -39,21 +39,20 @@ class HiveManager<E extends HiveObject> {
     return id;
   }
 
-  /// See [HiveManaged.getId()]
+  /// See [Madob.getId()]
   dynamic getId(E instance) {
     assert(instance != null);
 
     if (instance is! IKey) {
-      throw HiveManagedError(
-          'Unable to get Id because $E does not implement $IKey');
+      throw MadobError('Unable to get Id because $E does not implement $IKey');
     }
 
     return (instance as IKey).managedKey;
   }
 
-  /// See [HiveManaged.getBox()]
+  /// See [Madob.getBox()]
   Future<Box<E>> getBox() async {
-    return hiveInterface.openBox(hiveRepository.getBoxName<E>());
+    return hiveInterface.openBox(boxRepository.getBoxName<E>());
   }
 
   Future<void> _put(E instance) async =>
@@ -61,7 +60,7 @@ class HiveManager<E extends HiveObject> {
 
   Future<E> _get(dynamic key) async => (await getBox()).get(key);
 
-  /// See [HiveManaged.ensure()]
+  /// See [Madob.ensure()]
   Future<void> ensure(HiveObjectReference<E> instance) async {
     assert(instance != null);
 
@@ -70,7 +69,7 @@ class HiveManager<E extends HiveObject> {
     instance.hiveObject = await ensureObject(instance.hiveObject);
   }
 
-  /// See [HiveManaged.ensureObject()]
+  /// See [Madob.ensureObject()]
   Future<E> ensureObject(E instance) async {
     assert(instance != null);
 
@@ -88,7 +87,7 @@ class HiveManager<E extends HiveObject> {
     return instance;
   }
 
-  /// See [HiveManaged.getValue()]
+  /// See [Madob.getValue()]
   Future<R> getValue<R>(
       HiveObjectReference<E> hiveInstance, Future<R> Function(E) getValue,
       {bool uninsuredGet = false}) async {
@@ -101,7 +100,7 @@ class HiveManager<E extends HiveObject> {
     return getValue(hiveInstance.hiveObject);
   }
 
-  /// See [HiveManaged.setValue()]
+  /// See [Madob.setValue()]
   Future<void> setValue(HiveObjectReference<E> hiveInstance,
       Future<void> Function(E) writeValue) async {
     assert(hiveInstance != null);
@@ -115,7 +114,7 @@ class HiveManager<E extends HiveObject> {
     return hiveInstance.hiveObject.save();
   }
 
-  /// See [HiveManaged.setReference()]
+  /// See [Madob.setReference()]
   Future<R> setReference<R extends HiveObject>(
       HiveObjectReference<E> hiveInstance,
       R reference,
@@ -136,7 +135,7 @@ class HiveManager<E extends HiveObject> {
     return ensuredReference;
   }
 
-  /// See [HiveManaged.getOrUpdateReference()]
+  /// See [Madob.getOrUpdateReference()]
   Future<R> getOrUpdateReference<R extends HiveObject>(
       HiveObjectReference<E> hiveInstance,
       Future<R> Function(E) getReference,
@@ -149,7 +148,7 @@ class HiveManager<E extends HiveObject> {
         await getReference(hiveInstance.hiveObject), setReference);
   }
 
-  /// See [HiveManaged.initialize()]
+  /// See [Madob.initialize()]
   Future<E> initialize(
       HiveObjectReference<E> hiveInstance, E Function() newInstance) async {
     assert(newInstance != null);
@@ -161,7 +160,7 @@ class HiveManager<E extends HiveObject> {
     return hiveInstance.hiveObject;
   }
 
-  /// See [HiveManaged.delete()]
+  /// See [Madob.delete()]
   Future<void> delete(HiveObjectReference<E> hiveInstance) async {
     assert(hiveInstance != null);
 
@@ -172,7 +171,7 @@ class HiveManager<E extends HiveObject> {
 
       final existingItem = await _get(id);
       if (existingItem == null) {
-        throw HiveManagedError(
+        throw MadobError(
             'Cannot delete object because no item with id $id exists');
       } else {
         hiveInstance.hiveObject = existingItem;

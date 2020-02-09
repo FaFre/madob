@@ -1,14 +1,14 @@
-import 'package:hive_managed/hive_managed.dart';
-import 'package:hive_managed/src/entities/hive_managed.dart';
+import 'package:madob/hive_managed.dart';
+import 'package:madob/src/entities/hive_managed.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_managed/src/helper/strong_uuid.dart';
+import 'package:madob/src/helper/strong_uuid.dart';
 
 import '../../domain/entities/project.dart';
 import '../../domain/entities/task.dart';
 import 'project_model.dart';
 import 'task_model.dart';
 
-class ManagedTask extends HiveManaged<Task> implements ITask {
+class ManagedTask extends Madob<Task> implements ITask {
   ///[Task] is a [HiveObject] created by **hive_generator**
   ///[ITask] is also implemented by [Task] and defines the **getters** and **setters**
 
