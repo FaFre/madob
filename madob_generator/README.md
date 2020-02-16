@@ -1,0 +1,1 @@
+# madob_generator

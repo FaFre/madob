@@ -1,0 +1,6 @@
+targets:
+  $default:
+    builders:
+      madob_generator|getMadobGenerator:
+        generate_for:
+          - lib/src/madob_object.dart

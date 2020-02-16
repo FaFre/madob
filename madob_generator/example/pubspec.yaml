@@ -1,0 +1,15 @@
+name: madob_generator_example
+version: 0.0.1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dev_dependencies:
+  test: ^1.6.0
+
+dependencies:
+  build_runner: ^1.7.4
+  build_verify: ^1.1.1
+  madob_generator:
+    path: ".."
+  madob: ^0.1.0
