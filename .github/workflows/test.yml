@@ -11,9 +11,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Install dependencies
+      - name: Install dependencies for 'madob'
+        working-directory: madob
         run: pub get
-      - name: Run tests
+      - name: Run tests for 'madob'
+        working-directory: madob
         run: pub run test
 
   package-analysis:
@@ -29,7 +31,8 @@ jobs:
 
       # You can then use this id to retrieve the outputs in the next steps.
       # The following step shows how to exit the workflow with an error if a score is below 100:
-      - name: Checking scores
+      - name: Checking scores for 'madob'
+        working-directory: madob
         run: |
           MAINTENANCE_SCORE=${{ steps.analysis.outputs.maintenance }}
           HEALTH_SCORE=${{ steps.analysis.outputs.health }}
