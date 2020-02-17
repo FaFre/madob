@@ -32,7 +32,7 @@ class Madob<E extends HiveObject> implements HiveObjectReference<E> {
   /// Returns the Id of the managed object.
   ///
   /// The returned [dynamic] is used also used as a **hive-key**.
-  /// For Hive <= 1.3.0 the key must be either of type [int] or [String].
+  /// The key must be either of type [int] or [String].
   /// This may change with future versions.
   dynamic getId() {
     _throwIfUninitialized();

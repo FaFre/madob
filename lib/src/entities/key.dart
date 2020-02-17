@@ -8,5 +8,7 @@ import '../helper/strong_uuid.dart';
 abstract class IKey {
   /// Getter for the object identifier, also used as a **hive-key**.
   /// Also See [StrongUuid] and [Madob.getId()]
+  /// The key must be either of type [int] or [String].
+  /// This may change with future versions.
   dynamic get managedKey;
 }
