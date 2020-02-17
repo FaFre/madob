@@ -60,10 +60,11 @@ class AccessorHelper {
       if (getterReturnBoundTypes == null) {
         throw MadobGeneratorError('Getters always have to return a Future<T>. '
             '${getValue.name} returns '
-            '${getValue.returnType.getDisplayString()}');
+            '${getValue.returnType.element.name}');
       }
 
-      var setValueParamName = setValue.parameters.first.type.getDisplayString();
+      // parameter count already checked
+      var setValueParamName = setValue.parameters.first.type.element.name;
 
       if (getterReturnBoundTypes.first != setValueParamName) {
         throw MadobGeneratorError(

@@ -10,7 +10,7 @@ extension BoundTypes on DartType {
     var typeList = <String>[];
 
     for (var arg in interface.typeArguments) {
-      typeList.add(arg.getDisplayString());
+      typeList.add(arg.element.name);
     }
 
     return typeList;

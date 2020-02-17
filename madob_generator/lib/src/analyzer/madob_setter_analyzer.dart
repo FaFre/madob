@@ -27,31 +27,32 @@ class MadobSetterAnalyzer {
     assert(boundTypes != null);
 
     if (type is! InterfaceType) {
-      throw MadobGeneratorError(
-          'Called on wrong type: ${type.getDisplayString()}');
+      throw MadobGeneratorError('Called on wrong type: ${type.element.name}');
     }
 
     final interface = type as InterfaceType;
 
     if (type.element.name != typeName) {
-      throw MadobGeneratorError(
-          'Type check failed for ${type.getDisplayString()}. '
-          '${type.element.name} is not of type $typeName');
+      throw MadobGeneratorError('Type check failed for ${type.element.name}. '
+          'Its not of type $typeName');
     }
 
     if (interface.typeArguments.length != boundTypes.length) {
       throw MadobGeneratorError(
-          'Number of arguments for ${type.getDisplayString()}. '
-          '${type.element.name} does not match. '
+          'Number of arguments for ${type.element.name} does not match. '
           'Actual: ${interface.typeArguments.length} '
           'Expected: ${boundTypes.length}');
     }
 
     for (var i = 0; i < boundTypes.length; i++) {
-      if (interface.typeArguments[i].getDisplayString() != boundTypes[i]) {
+      // call getDisplayString() for void
+      final typeName = interface.typeArguments[i].element?.name ??
+          interface.typeArguments[i].getDisplayString();
+
+      if (typeName != boundTypes[i]) {
         throw MadobGeneratorError(
-            'Type arguments for ${type.getDisplayString()} do not match. '
-            'Actual: ${interface.typeArguments[i].getDisplayString()} '
+            'Type arguments for ${type.element.name} does not match. '
+            'Actual: $typeName '
             'Expected: ${boundTypes[i]}');
       }
     }

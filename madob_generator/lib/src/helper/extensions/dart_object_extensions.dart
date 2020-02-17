@@ -9,7 +9,7 @@ extension SuperField on DartObject {
 
     final superField = getField('(super)');
     if (superField == null) {
-      throw MadobGeneratorError('${type.getDisplayString()} is not inherited');
+      throw MadobGeneratorError('${type.element.name} is not inherited');
     }
 
     return superField.getField(fieldName);
