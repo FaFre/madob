@@ -7,7 +7,7 @@ import '../helper/accessor_helper.dart';
 import '../madob_generator_error.dart';
 
 class MadobSetterAnalyzer {
-  final _madobSetterTypeChecker = const TypeChecker.fromRuntime(MadobSetter);
+  static const _madobSetterTypeChecker = TypeChecker.fromRuntime(MadobSetter);
 
   final ClassElement _madobClass;
 
