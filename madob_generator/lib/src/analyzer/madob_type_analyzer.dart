@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:madob/madob.dart';
 
 import '../annotations/madob_type.dart';
 import '../madob_generator_error.dart';
@@ -27,15 +28,23 @@ class MadobTypeAnalyzer {
   void _checkNamingConvention() {
     if (!_classElement.name.startsWith('I')) {
       throw MadobGeneratorError(
-          'Abstract classes with @$MadobType should start with '
-          "'I' character to indicate an Interface "
-          'thats not the case for ${_classElement.name}');
+          'Abstract classes with @$MadobType must start with an '
+          "'I' character to indicate an interface. "
+          'Thats not the case for ${_classElement.name}');
+    }
+  }
+
+  void _checkImplementsKey() {
+    if (!_classElement.interfaces
+        .any((interface) => interface.element.name == '$IKey')) {
+      throw MadobGeneratorError("@$MadobType classes must implement '$IKey'");
     }
   }
 
   ClassElement validateAndGet() {
     _checkIsAbstract();
     _checkNamingConvention();
+    _checkImplementsKey();
 
     return _classElement;
   }
