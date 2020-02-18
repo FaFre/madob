@@ -10,6 +10,7 @@ dev_dependencies:
   effective_dart: ^1.2.1
   hive: ^1.4.0+1
   madob: ^0.1.0
+  code_builder: ^3.2.1
 
 dependencies:
   analyzer: ^0.39.4
