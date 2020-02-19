@@ -2,7 +2,15 @@ builders:
   madob_generator:
     import: "package:madob_generator/madob_generator.dart"
     builder_factories: ["getMadobGenerator"]
-    build_extensions: { ".dart": [".g.part"] }
+    build_extensions: { ".dart": [".madob_generator.g.part"] }
+    auto_apply: dependents
+    build_to: source
+    runs_before: ["hive_generator"]
+    applies_builders: ["source_gen|combining_builder"]
+  hive_generator:
+    import: "package:hive_generator/hive_generator.dart"
+    builder_factories: ["getBuilder"]
+    build_extensions: { ".dart": [".hive_generator.g.part"] }
     auto_apply: dependents
     build_to: cache
     applies_builders: ["source_gen|combining_builder"]

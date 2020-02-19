@@ -17,3 +17,4 @@ dependencies:
   analyzer: ^0.39.4
   source_gen: ^0.9.4+7
   build: ^1.2.2
+  hive_generator: ^0.7.0

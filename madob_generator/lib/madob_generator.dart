@@ -8,4 +8,4 @@ export 'src/annotations/madob_setter.dart';
 export 'src/annotations/madob_type.dart';
 
 Builder getMadobGenerator(BuilderOptions options) =>
-    SharedPartBuilder([HiveObjectGenerator()], 'madob_generator');
+    PartBuilder([HiveObjectGenerator()], '.madob_generator.g.dart');
