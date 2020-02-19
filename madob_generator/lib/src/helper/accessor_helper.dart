@@ -20,6 +20,11 @@ class AccessorHelper {
     var annotation = checker.firstAnnotationOf(accessor);
 
     var index = getFieldId(annotation);
+    if (index <= 0) {
+      throw MadobGeneratorError(
+          'Index for getter/setter must be >= 1 (Is: $index). '
+          'Index 0 is reserved for the key.');
+    }
     if (map.containsKey(index)) {
       throw MadobGeneratorError("Double registration for getter or setter "
           "${accessor.name} with Id $index");

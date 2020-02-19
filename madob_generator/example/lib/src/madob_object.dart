@@ -9,9 +9,9 @@ abstract class IProject implements IKey {
   @override
   String get managedKey;
 
-  @MadobGetter(0)
+  @MadobGetter(1)
   Future<String> get title;
-  @MadobSetter(0)
+  @MadobSetter(1)
   Future<void> setTitle(String newTitle);
 }
 
