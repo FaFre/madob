@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
+import 'package:madob_generator/src/builder/madob_class_builder.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'analyzer/madob_getter_analyzer.dart';
@@ -33,6 +34,14 @@ class HiveObjectGenerator extends GeneratorForAnnotation<MadobType> {
         properties: getterList
             .map((key, value) => MapEntry(key, MadobProperty(value))));
 
-    return null;
+    final classBuilder = MadobClassBuilder(
+        typeClass: MadobClass(annotation, madobClass),
+        key: MadobKey(managedKey),
+        properties: getterList
+            .map((key, value) => MapEntry(key, MadobProperty(value))));
+
+    return '${objectBuilder.build()}'
+        '\n\n'
+        '${classBuilder.build()}';
   }
 }
