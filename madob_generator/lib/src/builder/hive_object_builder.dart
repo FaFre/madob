@@ -9,10 +9,12 @@ import '../helper/extensions/string_capitalize.dart';
 import 'base_builder.dart';
 
 class HiveObjectBuilder extends BaseBuilder {
+  static const _idField = '_id';
+
   Field _managedKeyField() {
     return Field((fb) => fb
       ..type = refer(key.type)
-      ..name = '_id'
+      ..name = _idField
       ..modifier = FieldModifier.final$
       ..annotations.add(hiveFieldAnnotation(0)));
   }
@@ -22,7 +24,7 @@ class HiveObjectBuilder extends BaseBuilder {
       ..type = MethodType.getter
       ..name = 'managedKey'
       ..lambda = true
-      ..body = Code('_id')
+      ..body = Code(_idField)
       ..returns = refer(key.type)
       ..annotations.add(overrideAnnotation()));
   }
@@ -61,6 +63,15 @@ class HiveObjectBuilder extends BaseBuilder {
     return accessors;
   }
 
+  Constructor _constructor() {
+    return Constructor((cb) => cb
+      ..requiredParameters.add(Parameter((pb) => pb
+        ..toThis = true
+        ..name = _idField))
+      ..initializers
+          .add(Code('assert($_idField != null && $_idField.isNotEmpty)')));
+  }
+
   HiveObjectBuilder(
       {@required MadobClass typeClass,
       @required MadobKey key,
@@ -76,7 +87,8 @@ class HiveObjectBuilder extends BaseBuilder {
       ..fields.add(_managedKeyField())
       ..methods.add(_managedKeyGetter())
       ..fields.addAll(_hiveFields())
-      ..methods.addAll(_accessors()));
+      ..methods.addAll(_accessors())
+      ..constructors.add(_constructor()));
 
     return formatter.format(hiveType.accept(DartEmitter()).toString());
   }
