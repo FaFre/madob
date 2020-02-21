@@ -1,5 +1,4 @@
 import 'package:meta/meta.dart';
-import 'package:hive/hive.dart';
 
 class MadobType {
   /// The typeId of the annotated class.

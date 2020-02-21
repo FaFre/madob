@@ -2,7 +2,9 @@ import 'package:madob/madob.dart';
 import 'package:madob_generator/madob_generator.dart';
 import 'package:hive/hive.dart';
 
+//ignore: uri_has_not_been_generated
 part 'madob_object.madob_generator.g.dart';
+//ignore: uri_has_not_been_generated
 part 'madob_object.g.dart';
 
 @MadobType(typeId: 0)
