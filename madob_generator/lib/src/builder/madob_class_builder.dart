@@ -1,4 +1,5 @@
 import 'package:code_builder/code_builder.dart';
+import 'package:madob/madob.dart';
 import 'package:meta/meta.dart';
 
 import '../entities/madob_class.dart';
@@ -7,6 +8,7 @@ import '../entities/madob_property.dart';
 import '../helper/extensions/string_capitalize.dart';
 import 'base_builder.dart';
 
+/// Generates a [Madob]-class
 class MadobClassBuilder extends BaseBuilder {
   Method _managedKeyField() {
     return Method((mb) => mb
@@ -45,12 +47,14 @@ class MadobClassBuilder extends BaseBuilder {
     return accessors;
   }
 
+  /// Initializes [BaseBuilder]
   MadobClassBuilder(
       {@required MadobClass typeClass,
       @required MadobKey key,
       @required Map<int, MadobProperty> properties})
       : super(typeClass: typeClass, key: key, properties: properties);
 
+  /// Generates a [Madob]-class
   String build() {
     var madobClass = Class((b) => b
       ..name = 'Managed${typeClass.name}'

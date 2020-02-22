@@ -8,6 +8,7 @@ import '../entities/madob_property.dart';
 import '../helper/extensions/string_capitalize.dart';
 import 'base_builder.dart';
 
+/// Generates a [HiveObject]
 class HiveObjectBuilder extends BaseBuilder {
   static const _idField = '_id';
 
@@ -72,12 +73,14 @@ class HiveObjectBuilder extends BaseBuilder {
           .add(Code('assert($_idField != null && $_idField.isNotEmpty)')));
   }
 
+  /// Initializes [BaseBuilder]
   HiveObjectBuilder(
       {@required MadobClass typeClass,
       @required MadobKey key,
       @required Map<int, MadobProperty> properties})
       : super(typeClass: typeClass, key: key, properties: properties);
 
+  /// Generates a [HiveObject]-class
   String build() {
     var hiveType = Class((b) => b
       ..name = typeClass.name

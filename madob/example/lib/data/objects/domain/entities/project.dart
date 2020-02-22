@@ -1,4 +1,4 @@
-import 'package:madob/src/entities/key.dart';
+import 'package:madob/madob.dart';
 
 abstract class IProject implements IKey {
   @override

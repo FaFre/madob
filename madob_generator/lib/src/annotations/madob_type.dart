@@ -1,5 +1,7 @@
+import 'package:madob/madob.dart';
 import 'package:meta/meta.dart';
 
+/// Annotiate classes with [MadobType] to generate a [Madob] managed class
 class MadobType {
   /// The typeId of the annotated class.
   final int typeId;

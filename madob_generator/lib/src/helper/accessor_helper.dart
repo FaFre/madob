@@ -8,13 +8,16 @@ import 'extensions/dart_object_extensions.dart';
 import 'extensions/dart_type_extensions.dart';
 import 'extensions/iterable_extensions.dart';
 
+/// Generator helpers for accessors
 class AccessorHelper {
+  /// Returns the [int]-`index` of a [DartObject]'s `super`-class
   static int getFieldId(DartObject annotiation) {
     assert(annotiation != null);
 
     return annotiation.getSuperField('index').toIntValue();
   }
 
+  /// Validates [accessor] and adds it to [map]
   static V putAccessorIfAbsent<V extends Element>(
       TypeChecker checker, Map<int, V> map, V accessor) {
     var annotation = checker.firstAnnotationOf(accessor);
@@ -33,25 +36,28 @@ class AccessorHelper {
     return map.putIfAbsent(index, () => accessor);
   }
 
+  /// Validates if [getterList] and [setterList] both contain the same keys
   static void checkInconsistentAccessors(
       Map<int, PropertyAccessorElement> getterList,
       Map<int, MethodElement> setterList) {
     assert(getterList != null);
     assert(setterList != null);
 
-    getterList.keys.intersect(
+    getterList.keys.except(
         setterList.keys,
         (missing) =>
             throw MadobGeneratorError("No appropriate setter found for getter "
                 "'${getterList[missing].name}' by Id '$missing'"));
 
-    setterList.keys.intersect(
+    setterList.keys.except(
         getterList.keys,
         (missing) =>
             throw MadobGeneratorError("No appropriate getter found for setter "
                 "'${setterList[missing].name}' by Id '$missing'"));
   }
 
+  /// Validates if the getter returns the same [Type] as the setter takes
+  /// and if the type is valid
   static void checkMatchingAccessorTypes(
       Map<int, PropertyAccessorElement> getterList,
       Map<int, MethodElement> setterList) {

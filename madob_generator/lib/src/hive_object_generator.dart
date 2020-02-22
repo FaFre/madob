@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
-import 'package:madob_generator/src/builder/madob_class_builder.dart';
+import 'package:madob/madob.dart';
+import 'package:hive/hive.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'analyzer/madob_getter_analyzer.dart';
@@ -9,14 +10,17 @@ import 'analyzer/madob_setter_analyzer.dart';
 import 'analyzer/madob_type_analyzer.dart';
 import 'annotations/madob_type.dart';
 import 'builder/hive_object_builder.dart';
+import 'builder/madob_class_builder.dart';
 import 'entities/madob_class.dart';
 import 'entities/madob_key.dart';
 import 'entities/madob_property.dart';
 import 'helper/accessor_helper.dart';
 
-class HiveObjectGenerator extends GeneratorForAnnotation<MadobType> {
+/// Generator for [MadobType] annotation.
+/// Generated output contains source for [HiveObject] and [Madob] classes
+class MadobObjectGenerator extends GeneratorForAnnotation<MadobType> {
   @override
-  generateForAnnotatedElement(
+  String generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
     final madobClass = MadobTypeAnalyzer(element).validateAndGet();
 
