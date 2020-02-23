@@ -1,5 +1,7 @@
 name: madob_generator
-version: 0.0.1
+version: 0.1.0
+description: Automated code generation for managed database objects used by Madob.
+homepage: https://github.com/FaFre/madob
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
