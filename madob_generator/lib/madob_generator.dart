@@ -9,7 +9,7 @@ export 'src/annotations/madob_getter.dart';
 export 'src/annotations/madob_setter.dart';
 export 'src/annotations/madob_type.dart';
 
-/// Returns a [PartBuilder] to genererate [HiveObject]
+/// Returns a [PartBuilder] to generate [HiveObject]
 /// and [Madob]-managed classes
 Builder getMadobGenerator(BuilderOptions options) =>
     PartBuilder([MadobObjectGenerator()], '.madob_generator.g.dart');

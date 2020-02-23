@@ -6,7 +6,7 @@ import 'package:source_gen/source_gen.dart';
 /// Contains class-information to generate
 /// future [HiveObject] and [Madob] classes
 class MadobClass {
-  /// Used to indetify the [HiveType]
+  /// Used to identify the [HiveType]
   final int typeId;
 
   /// Name of the implemented object interface

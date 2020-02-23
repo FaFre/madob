@@ -18,7 +18,7 @@ class BaseBuilder {
   /// Key information
   final MadobKey key;
 
-  /// Property inforamtions
+  /// Property information
   final Map<int, MadobProperty> properties;
 
   /// Generates a [HiveType] annotation
@@ -35,7 +35,7 @@ class BaseBuilder {
   @protected
   CodeExpression overrideAnnotation() => const CodeExpression(Code('override'));
 
-  /// Initailizes the [BaseBuilder]
+  /// Initializes the [BaseBuilder]
   BaseBuilder(
       {@required this.typeClass, @required this.key, @required this.properties})
       : assert(typeClass != null),

@@ -4,24 +4,27 @@ import 'package:madob/madob.dart';
 import '../annotations/madob_type.dart';
 import '../madob_generator_error.dart';
 
+/// [MadobType] validator and converter
 class MadobTypeAnalyzer {
   ClassElement _classElement;
 
-  MadobTypeAnalyzer(Element annotadedClass) : assert(annotadedClass != null) {
-    if (annotadedClass.kind != ElementKind.CLASS) {
+  /// Initialize [MadobTypeAnalyzer] with [annotatedClass]
+  /// and validates [ElementKind]
+  MadobTypeAnalyzer(Element annotatedClass) : assert(annotatedClass != null) {
+    if (annotatedClass.kind != ElementKind.CLASS) {
       throw MadobGeneratorError(
           '@$MadobType can only be assigned to abstract classes. '
-          'Thats not the case for ${_classElement.name}');
+          "That's not the case for ${_classElement.name}");
     }
 
-    _classElement = annotadedClass as ClassElement;
+    _classElement = annotatedClass as ClassElement;
   }
 
   void _checkIsAbstract() {
     if (!_classElement.isAbstract) {
       throw MadobGeneratorError(
           '@$MadobType can only be assigned to abstract classes. '
-          'Thats not the case for ${_classElement.name}');
+          "That's not the case for ${_classElement.name}");
     }
   }
 
@@ -30,7 +33,7 @@ class MadobTypeAnalyzer {
       throw MadobGeneratorError(
           'Abstract classes with @$MadobType must start with an '
           "'I' character to indicate an interface. "
-          'Thats not the case for ${_classElement.name}');
+          "That's not the case for ${_classElement.name}");
     }
   }
 
@@ -41,6 +44,7 @@ class MadobTypeAnalyzer {
     }
   }
 
+  /// Run validations and return converted [Element]
   ClassElement validateAndGet() {
     _checkIsAbstract();
     _checkNamingConvention();

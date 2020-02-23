@@ -5,6 +5,7 @@ import '../annotations/madob_getter.dart';
 import '../helper/accessor_helper.dart';
 import '../madob_generator_error.dart';
 
+/// [MadobGetter] validator and converter
 class MadobGetterAnalyzer {
   static const _madobGetterTypeChecker = TypeChecker.fromRuntime(MadobGetter);
 
@@ -24,8 +25,11 @@ class MadobGetterAnalyzer {
     }
   }
 
+  /// Initializes [MadobGetterAnalyzer]
   MadobGetterAnalyzer(this._madobClass) : assert(_madobClass != null);
 
+  /// Run validators and return a [Map] of getters.
+  /// First type of returned [Map] is of [int] and represents the index
   Map<int, PropertyAccessorElement> validateAndGet() {
     final getterList = <int, PropertyAccessorElement>{};
 

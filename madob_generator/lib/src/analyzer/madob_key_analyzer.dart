@@ -2,6 +2,7 @@ import 'package:analyzer/dart/element/element.dart';
 
 import '../madob_generator_error.dart';
 
+/// Analyzer to determine and validate the `managedKey`
 class MadobKeyAnalyzer {
   static const _allowedKeyTypes = ['String', 'int'];
 
@@ -16,8 +17,10 @@ class MadobKeyAnalyzer {
     }
   }
 
+  /// Initializes [MadobKeyAnalyzer]
   MadobKeyAnalyzer(this._madobClass) : assert(_madobClass != null);
 
+  /// Run validations and return `managedKey` getter
   PropertyAccessorElement validateAndGet() {
     var getter = _madobClass.accessors.firstWhere((accessor) =>
         accessor.name == 'managedKey' &&

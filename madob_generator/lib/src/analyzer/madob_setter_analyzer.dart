@@ -6,6 +6,7 @@ import '../../madob_generator.dart';
 import '../helper/accessor_helper.dart';
 import '../madob_generator_error.dart';
 
+/// [MadobSetter] validator and converter
 class MadobSetterAnalyzer {
   static const _madobSetterTypeChecker = TypeChecker.fromRuntime(MadobSetter);
 
@@ -78,8 +79,11 @@ class MadobSetterAnalyzer {
     }
   }
 
+  /// Initializes [MadobSetterAnalyzer]
   MadobSetterAnalyzer(this._madobClass) : assert(_madobClass != null);
 
+  /// Run validators and return a [Map] of setters.
+  /// First type of returned [Map] is of [int] and represents the index
   Map<int, MethodElement> validateAndGet() {
     final setterList = <int, MethodElement>{};
 
