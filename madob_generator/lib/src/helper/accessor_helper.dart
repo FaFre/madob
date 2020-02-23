@@ -29,8 +29,8 @@ class AccessorHelper {
           'Index 0 is reserved for the key.');
     }
     if (map.containsKey(index)) {
-      throw MadobGeneratorError("Double registration for getter or setter "
-          "${accessor.name} with Id $index");
+      throw MadobGeneratorError('Double registration for getter or setter '
+          '${accessor.name} with Id $index');
     }
 
     return map.putIfAbsent(index, () => accessor);
@@ -46,13 +46,13 @@ class AccessorHelper {
     getterList.keys.except(
         setterList.keys,
         (missing) =>
-            throw MadobGeneratorError("No appropriate setter found for getter "
+            throw MadobGeneratorError('No appropriate setter found for getter '
                 "'${getterList[missing].name}' by Id '$missing'"));
 
     setterList.keys.except(
         getterList.keys,
         (missing) =>
-            throw MadobGeneratorError("No appropriate getter found for setter "
+            throw MadobGeneratorError('No appropriate getter found for setter '
                 "'${setterList[missing].name}' by Id '$missing'"));
   }
 

@@ -69,7 +69,7 @@ class MadobSetterAnalyzer {
 
   void _checkTypeArguments(MethodElement method) {
     try {
-      _checkBoundTypeArguments(method.returnType, "Future", ['void']);
+      _checkBoundTypeArguments(method.returnType, 'Future', ['void']);
     }
     // ignore: avoid_catching_errors
     on MadobGeneratorError catch (e) {

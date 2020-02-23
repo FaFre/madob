@@ -12,8 +12,8 @@ class MadobKeyAnalyzer {
     if (!_allowedKeyTypes.contains(accessor.returnType.element.name)) {
       throw MadobGeneratorError(
           "'managedKey' type of ${accessor.returnType.element.name} "
-          "is not supported. Supported types are: "
-          "${_allowedKeyTypes.join(',')}");
+          'is not supported. Supported types are: '
+          '${_allowedKeyTypes.join(',')}');
     }
   }
 
