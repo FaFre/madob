@@ -13,3 +13,7 @@ dependencies:
   madob_generator:
     path: ".."
   madob: ^0.1.0
+
+dependency_overrides:
+  madob:
+    path: ../../madob
