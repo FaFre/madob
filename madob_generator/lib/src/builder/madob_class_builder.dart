@@ -39,7 +39,7 @@ class MadobClassBuilder extends BaseBuilder {
         ..lambda = true
         ..body = Code('setValue((${typeClass.name.toLowerCase()}) => '
             '${typeClass.name.toLowerCase()}'
-            '.setTitle(new${value.name.capitalize()}))')
+            '.set${value.name.capitalize()}(new${value.name.capitalize()}))')
         ..returns = refer('Future<void>')
         ..modifier = MethodModifier.async
         ..annotations.add(overrideAnnotation()))));
