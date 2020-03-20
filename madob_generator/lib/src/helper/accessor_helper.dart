@@ -17,12 +17,19 @@ class AccessorHelper {
     return annotiation.getSuperField('index').toIntValue();
   }
 
+  /// Returns the referneced [HiveObject] name
+  static String getFieldHiveReference(DartObject annotation) {
+    assert(annotation != null);
+
+    return annotation.getField('referencedHiveObjectName').toStringValue();
+  }
+
   /// Validates [accessor] and adds it to [map]
   static V putAccessorIfAbsent<V extends Element>(
       TypeChecker checker, Map<int, V> map, V accessor) {
-    var annotation = checker.firstAnnotationOf(accessor);
+    final annotation = checker.firstAnnotationOf(accessor);
 
-    var index = getFieldId(annotation);
+    final index = getFieldId(annotation);
     if (index <= 0) {
       throw MadobGeneratorError(
           'Index for getter/setter must be >= 1 (Is: $index). '

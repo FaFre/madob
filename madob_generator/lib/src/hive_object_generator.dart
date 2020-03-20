@@ -13,8 +13,8 @@ import 'builder/hive_object_builder.dart';
 import 'builder/madob_class_builder.dart';
 import 'entities/madob_class.dart';
 import 'entities/madob_key.dart';
-import 'entities/madob_property.dart';
 import 'helper/accessor_helper.dart';
+import 'helper/madob_property_generator.dart';
 
 /// Generator for [MadobType] annotation.
 /// Generated output contains source for [HiveObject] and [Madob] classes
@@ -32,17 +32,18 @@ class MadobObjectGenerator extends GeneratorForAnnotation<MadobType> {
     AccessorHelper.checkInconsistentAccessors(getterList, setterList);
     AccessorHelper.checkMatchingAccessorTypes(getterList, setterList);
 
+    final propertyList =
+        MadobPropertyGenerator(getterList, setterList).generatePropertyList();
+
     final objectBuilder = HiveObjectBuilder(
         typeClass: MadobClass(annotation, madobClass),
         key: MadobKey(managedKey),
-        properties: getterList
-            .map((key, value) => MapEntry(key, MadobProperty(value))));
+        properties: propertyList);
 
     final classBuilder = MadobClassBuilder(
         typeClass: MadobClass(annotation, madobClass),
         key: MadobKey(managedKey),
-        properties: getterList
-            .map((key, value) => MapEntry(key, MadobProperty(value))));
+        properties: propertyList);
 
     return '${objectBuilder.build()}'
         '\n\n'
