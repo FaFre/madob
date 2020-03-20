@@ -1,8 +1,7 @@
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'package:madob_example/data/objects/data/entities/managed_task_model.dart';
-import 'package:madob_example/data/objects/data/entities/task_model.dart';
+import 'package:madob_example/data/objects/task.dart';
 
 import '../helper/common.dart';
 import '../helper/mocking.dart';

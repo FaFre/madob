@@ -1,9 +1,7 @@
 import 'package:madob/madob.dart';
 
-import 'package:madob_example/data/objects/data/entities/managed_task_model.dart';
-import 'package:madob_example/data/objects/data/entities/task_model.dart';
-import 'package:madob_example/data/objects/data/entities/project_model.dart';
-import 'package:madob_example/data/objects/data/entities/managed_project_model.dart';
+import 'package:madob_example/data/objects/task.dart';
+import 'package:madob_example/data/objects/project.dart';
 import 'package:madob_example/helper/path_provider.dart';
 
 void main() async {

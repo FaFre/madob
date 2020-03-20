@@ -7,5 +7,10 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  madob:
-    path: ..
+  madob: ^0.1.0
+  path: ^1.6.4
+
+dev_dependencies:
+  madob_generator:
+    path: ../../madob_generator
+  build_runner: ^1.7.4

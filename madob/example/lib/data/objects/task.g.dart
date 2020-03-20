@@ -1,33 +1,37 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'project_model.dart';
+part of 'task.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ProjectAdapter extends TypeAdapter<Project> {
+class TaskAdapter extends TypeAdapter<Task> {
   @override
-  final typeId = 0;
+  final typeId = 1;
 
   @override
-  Project read(BinaryReader reader) {
+  Task read(BinaryReader reader) {
     var numOfFields = reader.readByte();
     var fields = <int, dynamic>{
       for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Project(
+    return Task(
       fields[0] as String,
-    ).._title = fields[1] as String;
+    )
+      .._title = fields[1] as String
+      .._project = fields[2] as IProject;
   }
 
   @override
-  void write(BinaryWriter writer, Project obj) {
+  void write(BinaryWriter writer, Task obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj._id)
       ..writeByte(1)
-      ..write(obj._title);
+      ..write(obj._title)
+      ..writeByte(2)
+      ..write(obj._project);
   }
 }

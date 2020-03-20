@@ -2,8 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:madob/madob.dart';
 import 'package:madob/src/hive_manager.dart';
 import 'package:madob/src/hive_box_repository.dart';
-import 'package:madob_example/data/objects/data/entities/task_model.dart';
-import 'package:madob_example/data/objects/domain/entities/task.dart';
+import 'package:madob_example/data/objects/task.dart';
 import 'package:mockito/mockito.dart';
 
 class MockHive extends Mock implements HiveInterface {}
