@@ -1,6 +1,6 @@
 name: madob
 description: Madob is a super simple and easy to use highly-asynchronous library for database-synchronized objects. It is built upon hive, the blazing-fast key-value database.
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/FaFre/madob
 
 environment:
@@ -20,4 +20,4 @@ dev_dependencies:
   effective_dart: ^1.2.1
   madob_example:
     path: example
-  madob_generator: ^0.1.0
+  madob_generator: ^0.2.0
