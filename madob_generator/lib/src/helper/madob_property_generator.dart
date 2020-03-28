@@ -6,6 +6,7 @@ import '../annotations/madob_setter.dart';
 import '../entities/madob_property.dart';
 import '../madob_generator_error.dart';
 import 'accessor_helper.dart';
+import 'extensions/dart_type_extensions.dart';
 
 /// Generates a [MadobProperty] from a [Map] of getter and setter
 class MadobPropertyGenerator {
@@ -43,15 +44,25 @@ class MadobPropertyGenerator {
 
   /// Returns a [Map] of generated [MadobProperty]'s
   Map<int, MadobProperty> generatePropertyList() {
-    final propertyMap = _getterList.map((key, value) {
+    final propertyMap = _getterList.map((key, getter) {
+      final setter = _setterList[key];
       final setterAnnotation =
-          _madobSetterTypeChecker.firstAnnotationOf(_setterList[key]);
+          _madobSetterTypeChecker.firstAnnotationOf(setter);
+      final setParamName = setter.parameters.first.name;
+
+      final type = getter.returnType.getGenericBoundTypes().first;
 
       final reference = AccessorHelper.getFieldHiveReference(setterAnnotation);
-      if (reference?.isNotEmpty == true) _checkValidReferenceType(value);
+      if (reference?.isNotEmpty == true) _checkValidReferenceType(getter);
 
       return MapEntry(
-          key, MadobProperty(value, referencedHiveObjectName: reference));
+          key,
+          MadobProperty(
+              type: type,
+              getName: getter.name,
+              setName: setter.name,
+              setParameterName: setParamName,
+              referencedHiveObjectName: reference));
     });
 
     return propertyMap;

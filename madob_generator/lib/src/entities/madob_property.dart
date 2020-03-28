@@ -1,9 +1,6 @@
-import 'package:analyzer/dart/element/element.dart';
 import 'package:madob/madob.dart';
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
-
-import '../helper/extensions/dart_type_extensions.dart';
 
 /// Contains information about a property
 /// to generate a future setter/getter for [HiveObject] and [Madob]
@@ -13,14 +10,22 @@ class MadobProperty {
 
   /// Name of the referenced [HiveObject]
   final String referencedHiveObjectName;
+  bool get isReferenced => referencedHiveObjectName?.isNotEmpty == true;
 
-  /// Name of the property
-  final String name;
+  /// Getter-Name of the property
+  final String getName;
 
-  /// Initializes [type] and [name] with information from [accessor]
-  MadobProperty(PropertyAccessorElement accessor,
-      {@required this.referencedHiveObjectName})
-      : assert(accessor != null),
-        type = accessor.returnType.getGenericBoundTypes().first,
-        name = accessor.name;
+  /// Setter-Name of the property
+  final String setName;
+
+  /// Parameter-name of passed 'to-set' variable
+  final String setParameterName;
+
+  /// Initializes [type] and [getName] with information from [accessor]
+  MadobProperty(
+      {@required this.type,
+      @required this.getName,
+      @required this.setName,
+      @required this.setParameterName,
+      this.referencedHiveObjectName});
 }
