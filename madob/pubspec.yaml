@@ -20,4 +20,4 @@ dev_dependencies:
   effective_dart: ^1.2.1
   madob_example:
     path: example
-  madob_generator: ^0.2.0
+  madob_generator: ^0.2.2

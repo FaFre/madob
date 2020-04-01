@@ -19,6 +19,6 @@ abstract class ITask implements IKey {
 
   @MadobSetter(1)
   Future<void> setTitle(String newTitle);
-  @MadobSetter(2, referencedHiveObjectName: 'Project')
+  @MadobSetter(2, referencedMadobObject: 'IProject')
   Future<void> setProject(IProject newProject);
 }
