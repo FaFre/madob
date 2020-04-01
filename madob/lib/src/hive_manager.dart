@@ -12,12 +12,12 @@ class HiveManager<E extends HiveObject> {
   static final Map<Type, HiveManager> _managerCache = {};
 
   /// **Warning:** [hiveInterface] is only changed for
-  /// **unit-test purposes** to allow mocking.
+  /// **unit-test purposes**.
   @visibleForTesting
   static HiveInterface hiveInterface = Hive;
 
   /// **Warning:** [boxRepository] is only changed for
-  /// **unit-test purposes** to allow mocking.
+  /// **unit-test purposes**.
   @visibleForTesting
   static HiveBoxRepository boxRepository = BoxRepository;
 

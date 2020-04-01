@@ -11,7 +11,7 @@ class HiveBoxRepository {
   bool get isInitialized => _isInitialized;
 
   /// **Warning:** [hiveInterface] is only changed for
-  /// **unit-test purposes** to allow mocking.
+  /// **unit-test purposes**.
   @visibleForTesting
   HiveInterface hiveInterface = Hive;
 

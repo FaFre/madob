@@ -15,11 +15,11 @@ class Madob<E extends HiveObject> implements HiveObjectReference<E> {
   E hiveObject;
 
   /// **Warning:** [hiveManagerInterface] is only changed for
-  /// **unit-test purposes** to allow mocking.
+  /// **unit-test purposes**.
   @visibleForTesting
   HiveManager<E> hiveManagerInterface = HiveManager<E>();
 
-  /// Gets the reference of the underlying [HiveManager].
+  /// returns the reference of the underlying [HiveManager].
   HiveManager<E> get hive => hiveManagerInterface;
 
   void _throwIfUninitialized() {
@@ -33,7 +33,7 @@ class Madob<E extends HiveObject> implements HiveObjectReference<E> {
   ///
   /// The returned [dynamic] is used also used as a **hive-key**.
   /// The key must be either of type [int] or [String].
-  /// This may change with future versions.
+  /// (This may change with future versions
   dynamic getId() {
     _throwIfUninitialized();
     return hive.getId(hiveObject);
