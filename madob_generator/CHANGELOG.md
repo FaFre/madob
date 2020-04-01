@@ -1,5 +1,10 @@
 # MadobGenerator
 
+## 0.2.2
+
+- `MadobSetter` distinct between `referencedHiveObject` and `referencedMadobObject`
+- Enhanced code generation: Automatic unwrapping of Madob-objects via `setReference`
+
 ## 0.2.1
 
 - Direct wrapping into madob instead returning raw hive object-references via `get`
