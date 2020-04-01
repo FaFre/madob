@@ -45,7 +45,7 @@ class MadobTypeAnalyzer {
     }
   }
 
-  /// Run validations and return converted [Element]
+  /// Runs validations and returns converted [Element]
   ClassElement validateAndGet() {
     _checkIsAbstract();
     _checkNamingConvention();

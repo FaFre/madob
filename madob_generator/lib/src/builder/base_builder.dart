@@ -7,7 +7,7 @@ import '../entities/madob_class.dart';
 import '../entities/madob_key.dart';
 import '../entities/madob_property.dart';
 
-/// Provides base members and helpers to generate object classes
+/// Provides base members and helpers to generate *Object* classes
 class BaseBuilder {
   /// Instance of [DartFormatter]
   final DartFormatter formatter = DartFormatter();

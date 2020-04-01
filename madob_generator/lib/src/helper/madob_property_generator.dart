@@ -8,7 +8,7 @@ import '../madob_generator_error.dart';
 import 'accessor_helper.dart';
 import 'extensions/dart_type_extensions.dart';
 
-/// Generates a [MadobProperty] from a [Map] of getter and setter
+/// Generates [MadobProperty]'s from a [Map] of getter and setter
 class MadobPropertyGenerator {
   static const _madobSetterTypeChecker = TypeChecker.fromRuntime(MadobSetter);
 

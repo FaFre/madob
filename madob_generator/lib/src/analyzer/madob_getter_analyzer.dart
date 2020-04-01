@@ -28,8 +28,8 @@ class MadobGetterAnalyzer {
   /// Initializes [MadobGetterAnalyzer]
   MadobGetterAnalyzer(this._madobClass) : assert(_madobClass != null);
 
-  /// Run validators and return a [Map] of getters.
-  /// First type of returned [Map] is of [int] and represents the index
+  /// Runs all validators and returns a [Map] of getters.
+  /// The key of the returned [Map] is of [int] and represents the Property-Id
   Map<int, PropertyAccessorElement> validateAndGet() {
     final getterList = <int, PropertyAccessorElement>{};
 

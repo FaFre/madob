@@ -17,7 +17,7 @@ import 'helper/accessor_helper.dart';
 import 'helper/madob_property_generator.dart';
 
 /// Generator for [MadobType] annotation.
-/// Generated output contains source for [HiveObject] and [Madob] classes
+/// Generated output contains source-code for [HiveObject] and [Madob] classes
 class MadobObjectGenerator extends GeneratorForAnnotation<MadobType> {
   @override
   String generateForAnnotatedElement(

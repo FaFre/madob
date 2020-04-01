@@ -6,6 +6,6 @@ class MadobType {
   /// The typeId of the annotated class.
   final int typeId;
 
-  /// Adds an [MadobType] with corresponding [typeId]
+  /// Add a [MadobType] with corresponding [typeId]
   const MadobType({@required this.typeId});
 }
