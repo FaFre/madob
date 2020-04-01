@@ -3,6 +3,7 @@ import 'package:madob/madob.dart';
 
 import '../annotations/madob_type.dart';
 import '../madob_generator_error.dart';
+import '../scheme/madob_schemes.dart';
 
 /// [MadobType] validator and converter
 class MadobTypeAnalyzer {
@@ -29,7 +30,7 @@ class MadobTypeAnalyzer {
   }
 
   void _checkNamingConvention() {
-    if (!_classElement.name.startsWith('I')) {
+    if (!hasInterfaceNamingConvention(_classElement.name)) {
       throw MadobGeneratorError(
           'Abstract classes with @$MadobType must start with an '
           "'I' character to indicate an interface. "

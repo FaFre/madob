@@ -17,11 +17,18 @@ class AccessorHelper {
     return annotiation.getSuperField('index').toIntValue();
   }
 
-  /// Returns the referneced [HiveObject] name
+  /// Returns the referenced [HiveObject] name
   static String getFieldHiveReference(DartObject annotation) {
     assert(annotation != null);
 
-    return annotation.getField('referencedHiveObjectName').toStringValue();
+    return annotation.getField('referencedHiveObject').toStringValue();
+  }
+
+  /// Returns the referenced [Madob]-class name
+  static String getFieldMadobReference(DartObject annotation) {
+    assert(annotation != null);
+
+    return annotation.getField('referencedMadobObject').toStringValue();
   }
 
   /// Validates [accessor] and adds it to [map]

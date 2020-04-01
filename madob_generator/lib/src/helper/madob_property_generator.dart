@@ -52,8 +52,14 @@ class MadobPropertyGenerator {
 
       final type = getter.returnType.getGenericBoundTypes().first;
 
-      final reference = AccessorHelper.getFieldHiveReference(setterAnnotation);
-      if (reference?.isNotEmpty == true) _checkValidReferenceType(getter);
+      final hiveReference =
+          AccessorHelper.getFieldHiveReference(setterAnnotation);
+      final madobReference =
+          AccessorHelper.getFieldMadobReference(setterAnnotation);
+
+      if (hiveReference != null || madobReference != null) {
+        _checkValidReferenceType(getter);
+      }
 
       return MapEntry(
           key,
@@ -62,7 +68,8 @@ class MadobPropertyGenerator {
               getName: getter.name,
               setName: setter.name,
               setParameterName: setParamName,
-              referencedHiveObjectName: reference));
+              referencedClass: hiveReference ?? madobReference,
+              isReferenceManaged: madobReference != null));
     });
 
     return propertyMap;

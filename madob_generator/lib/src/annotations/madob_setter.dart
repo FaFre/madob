@@ -1,11 +1,23 @@
 import 'package:hive/hive.dart';
+import 'package:madob/madob.dart';
 
-/// Annotate a setter with [MadobSetter] to add it to the managed object
-/// It's inherited from [HiveField]
+/// Annotate a setter with [MadobSetter] to add it as a managed Madob-property
+/// It is inherited from [HiveField]
 class MadobSetter extends HiveField {
-  /// When the property refers to another [HiveObject] it has to be specified
-  final String referencedHiveObjectName;
+  /// When the property refers to another [HiveObject] it has to be specified.
+  /// You can either specify the abstract class used by the generator
+  /// e.g. `IProject` or the generated [HiveObject] e.g. `Project`
+  final String referencedHiveObject;
 
-  /// Adds an setter with corresponding [index]
-  const MadobSetter(int index, {this.referencedHiveObjectName}) : super(index);
+  /// When the property refers to another [Madob]-object it has to be specified.
+  /// You can either specify the abstract class used by the generator
+  /// e.g. `IProject` or the generated [HiveObject] e.g. `Project`
+  final String referencedMadobObject;
+
+  /// Add a setter with corresponding [index]
+  const MadobSetter(int index,
+      {this.referencedHiveObject, this.referencedMadobObject})
+      : assert(!(referencedHiveObject != null && referencedMadobObject != null),
+            'Use either `referencedHiveObject` or `referencedMadobObject`'),
+        super(index);
 }

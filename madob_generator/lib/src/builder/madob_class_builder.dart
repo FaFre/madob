@@ -5,12 +5,11 @@ import 'package:meta/meta.dart';
 import '../entities/madob_class.dart';
 import '../entities/madob_key.dart';
 import '../entities/madob_property.dart';
+import '../scheme/madob_schemes.dart';
 import 'base_builder.dart';
 
 /// Generates a [Madob]-class
 class MadobClassBuilder extends BaseBuilder {
-  static const String _classPrefix = 'Managed';
-
   Method _managedKeyField() {
     return Method((mb) => mb
       ..type = MethodType.getter
@@ -25,8 +24,8 @@ class MadobClassBuilder extends BaseBuilder {
     Code generateGetBody(MadobProperty property) {
       if (property.isReferenced) {
         return Code('Future.value('
-            '$_classPrefix${property.referencedHiveObjectName}()..hiveObject ='
-            'await getOrUpdateReference<${property.referencedHiveObjectName}>'
+            '$madobClassPrefix${property.referencedHiveObject}()..hiveObject ='
+            'await getOrUpdateReference<${property.referencedHiveObject}>'
             '((${typeClass.name.toLowerCase()}) async '
             '=> await ${typeClass.name.toLowerCase()}.${property.getName},'
             '(${typeClass.name.toLowerCase()}, '
@@ -42,9 +41,15 @@ class MadobClassBuilder extends BaseBuilder {
 
     Code generateSetBody(MadobProperty property) {
       if (property.isReferenced) {
-        return Code('setReference<${property.referencedHiveObjectName}>'
-            '(${property.setParameterName}, '
-            '(${typeClass.name.toLowerCase()}, '
+        final referenceParam = (property.isReferenceManaged)
+            ? '(${property.setParameterName} is '
+                '$madobClassPrefix${property.referencedHiveObject}) ? '
+                '${property.setParameterName}.hiveObject : '
+                '${property.setParameterName}'
+            : property.setParameterName;
+
+        return Code('setReference<${property.referencedHiveObject}>'
+            '($referenceParam, (${typeClass.name.toLowerCase()}, '
             '${property.setParameterName}) => '
             '${typeClass.name.toLowerCase()}'
             '.${property.setName}'
@@ -91,7 +96,7 @@ class MadobClassBuilder extends BaseBuilder {
   /// Generates a [Madob]-class
   String build() {
     var madobClass = Class((b) => b
-      ..name = '$_classPrefix${typeClass.name}'
+      ..name = '$madobClassPrefix${typeClass.name}'
       ..extend = refer('Madob<${typeClass.name}>')
       ..implements.add(refer(typeClass.interface))
       ..methods.add(_managedKeyField())
