@@ -15,12 +15,23 @@ class PathProvider {
   }
 
   Future<Directory> getTempDirectory() async {
-    var name = _random.nextInt(pow(2, 32) as int);
-    var dir = Directory(path.join(_tempPath, '${name}_tmp'));
+    final name = _random.nextInt(pow(2, 32) as int);
+    final dir = Directory(path.join(_tempPath, '${name}_tmp'));
     if (await dir.exists()) {
       await dir.delete(recursive: true);
     }
+
     await dir.create(recursive: true);
+
+    return dir;
+  }
+
+  Future<Directory> getFixedDirectory() async {
+    final dir = Directory(path.join(_tempPath, 'persistent'));
+    if (!(await dir.exists())) {
+      await dir.create(recursive: true);
+    }
+
     return dir;
   }
 }

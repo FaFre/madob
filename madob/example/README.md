@@ -7,7 +7,33 @@ In this example we use two Madob objects, to lets say, get some daily tasks orga
 ## Getting started
 
 To get started we need to create two `abstract` classes: `IProject` and `ITask`.
-`IProject` to `ITask` stands in a one-to-many relationship (One `IProject` is related to n `ITask`)
+`IProject` to `ITask` stands in a one-to-many relationship (One `IProject` is related to n `ITask`).
+
+To create a new class that can be consumed by the generator, we use the following template:
+
+```dart
+import 'package:hive/hive.dart';
+import 'package:madob/madob.dart';
+import 'package:madob_generator/madob_generator.dart';
+
+part '<filename>.g.dart';
+part '<filename>.madob_generator.g.dart';
+
+@MadobType(typeId: <typeId>)
+abstract class I<object> implements IKey {
+  @override
+  <key-type> get managedKey;
+
+  ...
+
+  @MadobGetter(1)
+  ...
+
+  @MadobSetter(1)
+  ...
+}
+
+```
 
 [`IProject`](lib/data/objects/project.dart):
 
@@ -58,7 +84,7 @@ Basically `Project` and `ProjectAdapter` are helper classes you can ignore.
 
 Each `class` has to be annotated with `MadobType` and a unique `typeId` to qualify it for code generation.
 
-To distinct elements Madob uses `managedKey` which represents an Uuid. Because of that you need to implement `IKey` and generate the `managedKey` override.
+To distinct elements Madob uses `managedKey` which represents an Uuid in this case (also could be any `String` value, not necessarily an Uuid). Because of that you need to implement `IKey` and generate the `managedKey` override to specify the key data type (`String` or `int` is supported).
 
 Madob expects an getter-setter pair for each property which is annotated with `MadobGetter` and `MadobSetter`, linked by a shared Id (first parameter). If the property is linked to another Madob-object you have to specify the generated Hive class e.g. `IProject` in the named parameter `referencedMadobObject`. You are also able to link unmanaged `HiveObject`'s instead of managed ones via the named `referencedHiveObject` parameter (in case you have mixed code).
 
