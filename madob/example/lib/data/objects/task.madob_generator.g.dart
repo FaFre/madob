@@ -40,10 +40,14 @@ class ManagedTask extends Madob<Task> implements ITask {
   Future<void> setTitle(String newTitle) async =>
       setValue((task) => task.setTitle(newTitle));
   @override
-  Future<IProject> get project async => Future.value(ManagedProject()
-    ..hiveObject = await getOrUpdateReference<Project>(
+  Future<IProject> get project async {
+    final value = await getOrUpdateReference<Project>(
         (task) async => await task.project,
-        (task, newProject) => task.setProject(newProject)));
+        (task, newProject) => task.setProject(newProject));
+    return Future.value(
+        (value != null) ? (ManagedProject()..hiveObject = value) : null);
+  }
+
   @override
   Future<void> setProject(IProject newProject) async => setReference<Project>(
       (newProject is ManagedProject) ? newProject.hiveObject : newProject,
