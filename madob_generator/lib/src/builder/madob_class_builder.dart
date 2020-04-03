@@ -23,8 +23,7 @@ class MadobClassBuilder extends BaseBuilder {
   List<Method> _accessors() {
     Code generateGetBody(MadobProperty property) {
       if (property.isReferenced) {
-        return Code('Future.value('
-            '$madobClassPrefix${property.referencedHiveObject}()..hiveObject ='
+        return Code('final value = '
             'await getOrUpdateReference<${property.referencedHiveObject}>'
             '((${typeClass.name.toLowerCase()}) async '
             '=> await ${typeClass.name.toLowerCase()}.${property.getName},'
@@ -32,7 +31,10 @@ class MadobClassBuilder extends BaseBuilder {
             '${property.setParameterName}) => '
             '${typeClass.name.toLowerCase()}'
             '.${property.setName}'
-            '(${property.setParameterName})))');
+            '(${property.setParameterName}));'
+            'return Future.value((value != null) ? ('
+            '$madobClassPrefix${property.referencedHiveObject}()..hiveObject ='
+            'value) : null);');
       }
 
       return Code('getValue((${typeClass.name.toLowerCase()}) '
@@ -67,7 +69,7 @@ class MadobClassBuilder extends BaseBuilder {
       ..add(Method((mb) => mb
         ..type = MethodType.getter
         ..name = value.getName
-        ..lambda = true
+        ..lambda = !value.isReferenced
         ..modifier = value.isReferenced ? MethodModifier.async : null
         ..body = generateGetBody(value)
         ..returns = refer('Future<${value.type}>')
