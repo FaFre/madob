@@ -1,5 +1,6 @@
 import 'src/hive_box_repository.dart';
 
+export 'package:madob/src/hive_box_repository.dart';
 export 'package:madob/src/madob_error.dart';
 export 'package:madob/src/entities/key.dart';
 export 'package:madob/src/entities/madob.dart';
